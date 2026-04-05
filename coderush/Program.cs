@@ -21,9 +21,10 @@ namespace coderush
     {
         public static async Task Main(string[] args)
         {
-            // Load .env file so secrets stay out of appsettings.json
-            LoadEnvFile(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".env"));
-            LoadEnvFile(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
+            // Load .env file so secrets stay out of appsettings.json.
+            // Fall back to .env.example when .env does not exist.
+            LoadEnvFileWithFallback(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+            LoadEnvFileWithFallback(Directory.GetCurrentDirectory());
 
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             
@@ -271,6 +272,22 @@ namespace coderush
             }
 
             app.Run();
+        }
+
+        private static void LoadEnvFileWithFallback(string directory)
+        {
+            string envPath = Path.Combine(directory, ".env");
+            if (File.Exists(envPath))
+            {
+                LoadEnvFile(envPath);
+                return;
+            }
+
+            string examplePath = Path.Combine(directory, ".env.example");
+            if (File.Exists(examplePath))
+            {
+                LoadEnvFile(examplePath);
+            }
         }
 
         private static void LoadEnvFile(string path)
