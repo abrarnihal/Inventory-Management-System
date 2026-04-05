@@ -290,6 +290,15 @@ namespace coderush
 
                 string key = trimmed[..index].Trim();
                 string value = trimmed[(index + 1)..].Trim();
+
+                // Strip surrounding quotes (single or double)
+                if (value.Length >= 2 &&
+                    ((value[0] == '"' && value[^1] == '"') ||
+                     (value[0] == '\'' && value[^1] == '\'')))
+                {
+                    value = value[1..^1];
+                }
+
                 Environment.SetEnvironmentVariable(key, value);
             }
         }

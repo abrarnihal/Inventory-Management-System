@@ -15,8 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coderush.E2ETests", "coderu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E8A3B8A0-1F6A-4C2D-9B5E-3A7F0C8D2E4B}"
 	ProjectSection(SolutionItems) = preProject
-		.env = .env
-		.gitignore = .gitignore
+		.env.example = .env.example
 	EndProjectSection
 EndProject
 Global
