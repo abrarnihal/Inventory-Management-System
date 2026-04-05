@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -23,7 +24,8 @@ namespace coderush.Controllers
         ApplicationDbContext context,
         IEmailSender emailSender,
         ILogger<AccountController> logger,
-        ISliderCaptchaService captchaService) : Controller
+        ISliderCaptchaService captchaService,
+        IServiceScopeFactory serviceScopeFactory) : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
@@ -31,6 +33,7 @@ namespace coderush.Controllers
         private readonly IEmailSender _emailSender = emailSender;
         private readonly ILogger _logger = logger;
         private readonly ISliderCaptchaService _captchaService = captchaService;
+        private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
         [TempData]
         public string ErrorMessage { get; set; }
@@ -233,6 +236,26 @@ namespace coderush.Controllers
                     await EnsureUserProfileAsync(user);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Welcome notification for the new user
+                    try
+                    {
+                        using var scope = _serviceScopeFactory.CreateScope();
+                        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+
+                        await notificationService.AddNotificationAsync(
+                            "Congratulations on joining us in Inventory Management",
+                            targetUserId: user.Id);
+
+                        // Notify admins about the new registration
+                        await notificationService.AddNotificationAsync(
+                            $"A new user has registered: {model.Email}",
+                            targetRole: "User",
+                            entityName: "User",
+                            entityAction: "Added");
+                    }
+                    catch { /* notification failure should not block registration */ }
+
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
