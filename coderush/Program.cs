@@ -1,4 +1,5 @@
 ﻿using coderush.Data;
+using coderush.Filters;
 using coderush.Models;
 using coderush.Services;
 using Microsoft.AspNetCore.Builder;
@@ -139,9 +140,13 @@ namespace coderush
 
             builder.Services.AddSingleton<ISliderCaptchaService, SliderCaptchaService>();
 
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<NotificationActionFilter>();
+
             builder.Services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
+                options.Filters.AddService<NotificationActionFilter>();
             })
             .AddNewtonsoftJson(options =>
             {
@@ -260,6 +265,40 @@ namespace coderush
                     catch
                     {
                         // Table may not exist yet on a fresh database
+                    }
+
+                    // Ensure Notification table exists (idempotent)
+                    try
+                    {
+                        await context.Database.ExecuteSqlRawAsync(@"
+                            IF OBJECT_ID('Notification', 'U') IS NULL
+                            BEGIN
+                                CREATE TABLE Notification (
+                                    NotificationId INT IDENTITY(1,1) PRIMARY KEY,
+                                    Message NVARCHAR(MAX) NOT NULL,
+                                    CreatedDateTime DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+                                    TargetUserId NVARCHAR(450) NULL,
+                                    TargetRole NVARCHAR(256) NULL,
+                                    EntityName NVARCHAR(256) NULL,
+                                    EntityAction NVARCHAR(50) NULL
+                                );
+                            END");
+
+                        await context.Database.ExecuteSqlRawAsync(@"
+                            IF OBJECT_ID('NotificationReadStatus', 'U') IS NULL
+                            BEGIN
+                                CREATE TABLE NotificationReadStatus (
+                                    NotificationReadStatusId INT IDENTITY(1,1) PRIMARY KEY,
+                                    NotificationId INT NOT NULL,
+                                    UserId NVARCHAR(450) NOT NULL,
+                                    IsRead BIT NOT NULL DEFAULT 0,
+                                    IsDeleted BIT NOT NULL DEFAULT 0
+                                );
+                            END");
+                    }
+                    catch
+                    {
+                        // Database may not be available yet
                     }
 
                     await DbInitializer.Initialize(context, functional);

@@ -75,5 +75,9 @@ namespace coderush.Data
         public virtual DbSet<coderush.Models.ChatConversation> ChatConversation { get; set; }
 
         public virtual DbSet<coderush.Models.ChatMessage> ChatMessage { get; set; }
+
+        public virtual DbSet<coderush.Models.Notification> Notification { get; set; }
+
+        public virtual DbSet<coderush.Models.NotificationReadStatus> NotificationReadStatus { get; set; }
     }
 }
