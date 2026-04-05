@@ -41,7 +41,7 @@ namespace coderush.Controllers.Api
             {
                 ApplicationUser user = await _userManager.GetUserAsync(User);
                 IList<string> userRoles = await _userManager.GetRolesAsync(user);
-                var response = await _chatBotService.ChatAsync(request.Message, request.History, userRoles);
+                var response = await _chatBotService.ChatAsync(request.Message, request.History, userRoles, userId: user?.Id);
                 return Ok(new ChatResponse { Success = true, Message = response });
             }
             catch (Exception)
@@ -309,7 +309,7 @@ namespace coderush.Controllers.Api
                     }
                 }
 
-                var response = await _chatBotService.ChatAsync(message, history, userRoles, parsedFiles);
+                var response = await _chatBotService.ChatAsync(message, history, userRoles, parsedFiles, userId: user?.Id);
                 return Ok(new ChatResponse { Success = true, Message = response });
             }
             catch (Exception)

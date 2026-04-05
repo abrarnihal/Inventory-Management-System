@@ -84,7 +84,7 @@ namespace coderush.Services
                 IChatBotService chatBotService = scope.ServiceProvider.GetRequiredService<IChatBotService>();
                 ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                string response = await chatBotService.ChatAsync(message, history, userRoles, files, pendingResponse.CancellationTokenSource.Token);
+                string response = await chatBotService.ChatAsync(message, history, userRoles, files, pendingResponse.CancellationTokenSource.Token, pendingResponse.ApplicationUserId);
 
                 if (pendingResponse.CancellationTokenSource.IsCancellationRequested)
                 {

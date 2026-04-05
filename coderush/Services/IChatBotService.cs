@@ -7,6 +7,6 @@ namespace coderush.Services
 {
     public interface IChatBotService
     {
-        Task<string> ChatAsync(string userMessage, List<ChatMessageDto> history, IList<string> userRoles, List<ChatFileContent> files = null, CancellationToken cancellationToken = default);
+        Task<string> ChatAsync(string userMessage, List<ChatMessageDto> history, IList<string> userRoles, List<ChatFileContent> files = null, CancellationToken cancellationToken = default, string userId = null);
     }
 }

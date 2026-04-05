@@ -1,6 +1,7 @@
 using coderush.Data;
 using coderush.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,14 @@ namespace coderush.Services
         HttpClient httpClient,
         IOptions<OpenAIOptions> options,
         ApplicationDbContext context,
-        INumberSequence numberSequence) : IChatBotService
+        INumberSequence numberSequence,
+        IServiceScopeFactory serviceScopeFactory) : IChatBotService
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly OpenAIOptions _options = options.Value;
         private readonly ApplicationDbContext _context = context;
         private readonly INumberSequence _numberSequence = numberSequence;
+        private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
         private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = false };
 
@@ -43,6 +46,13 @@ namespace coderush.Services
             "- Warehouses, Branches, Currencies, Cash Banks\n\n" +
             "You can query data, create new records, edit existing records, and delete existing records using the available tools. " +
             "When users ask about inventory or want to perform operations, use the tools.\n\n" +
+            "You can also manage the user's notifications:\n" +
+            "- List their notifications (with read/unread status)\n" +
+            "- Check how many unread notifications they have\n" +
+            "- Mark individual notifications as read or unread\n" +
+            "- Delete individual notifications\n" +
+            "- Bulk-delete all notifications or only read ones\n" +
+            "When the user asks about notifications, use the notification tools.\n\n" +
             "Users can also upload files (.txt, .md, .docx, .xlsx, .xls) for you to analyze. " +
             "When a file is uploaded, its content will be provided. You should:\n" +
             "- Summarize the file contents if asked\n" +
@@ -184,11 +194,13 @@ namespace coderush.Services
             ["edit_vendor_type"] = Pages.MainMenu.VendorType.RoleName,
             ["edit_purchase_type"] = Pages.MainMenu.PurchaseType.RoleName,
             ["get_dashboard_data"] = Pages.MainMenu.Dashboard.RoleName,
+            // Notification tool – available to any authenticated user (null = no role needed)
+            ["manage_notifications"] = null,
         };
 
         private static readonly List<object> AllToolDefinitions = BuildTools();
 
-        public async Task<string> ChatAsync(string userMessage, List<ChatMessageDto> history, IList<string> userRoles, List<ChatFileContent> files = null, CancellationToken cancellationToken = default)
+        public async Task<string> ChatAsync(string userMessage, List<ChatMessageDto> history, IList<string> userRoles, List<ChatFileContent> files = null, CancellationToken cancellationToken = default, string userId = null)
         {
             IList<string> roles = userRoles ?? Array.Empty<string>();
 
@@ -254,8 +266,20 @@ namespace coderush.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return "I'm sorry, I encountered an error communicating with the AI service. " +
-                           "Please ensure the OpenAI API key is configured correctly in appsettings.json.";
+                    // Surface the real error from the OpenAI API response
+                    string apiError = $"HTTP {(int)response.StatusCode} {response.StatusCode}";
+                    try
+                    {
+                        using var errDoc = JsonDocument.Parse(responseStr);
+                        if (errDoc.RootElement.TryGetProperty("error", out JsonElement errorEl)
+                            && errorEl.TryGetProperty("message", out JsonElement msgEl))
+                        {
+                            apiError = msgEl.GetString();
+                        }
+                    }
+                    catch { }
+
+                    return $"I'm sorry, the AI service returned an error: {apiError}";
                 }
 
                 using var doc = JsonDocument.Parse(responseStr);
@@ -301,7 +325,11 @@ namespace coderush.Services
                         var functionName = tc.GetProperty("function").GetProperty("name").GetString();
                         var arguments = tc.GetProperty("function").GetProperty("arguments").GetString();
 
-                        var result = await ExecuteFunctionAsync(functionName, arguments, roles);
+                        var result = await ExecuteFunctionAsync(functionName, arguments, roles, userId);
+
+                        // Generate a notification for mutating tool calls (create/edit/delete)
+                        await TryCreateToolNotificationAsync(functionName, result, userId);
+
                         messages.Add(new Dictionary<string, object>
                         {
                             ["role"] = "tool",
@@ -322,7 +350,7 @@ namespace coderush.Services
             return "I reached the maximum number of processing steps. Please try a simpler request.";
         }
 
-        private async Task<string> ExecuteFunctionAsync(string functionName, string argumentsJson, IList<string> userRoles)
+        private async Task<string> ExecuteFunctionAsync(string functionName, string argumentsJson, IList<string> userRoles, string userId)
         {
             try
             {
@@ -465,6 +493,8 @@ namespace coderush.Services
                     "edit_vendor_type" => await EditVendorType(args),
                     "edit_purchase_type" => await EditPurchaseType(args),
                     "get_dashboard_data" => await GetDashboardData(),
+                    // Unified notification tool
+                    "manage_notifications" => await ManageNotifications(args, userRoles, userId),
                     _ => $"Unknown function: {functionName}"
                 };
             }
@@ -473,6 +503,175 @@ namespace coderush.Services
                 return $"Error executing {functionName}: {ex.Message}";
             }
         }
+
+        /// <summary>
+        /// After a successful create / edit / delete tool call, creates a notification
+        /// using a fresh DI scope (same pattern as the action filter).
+        /// </summary>
+        private async Task TryCreateToolNotificationAsync(string functionName, string toolResult, string userId)
+        {
+            // Only process mutating tool calls
+            string action;
+            if (functionName.StartsWith("create_", StringComparison.Ordinal))
+                action = "Added";
+            else if (functionName.StartsWith("edit_", StringComparison.Ordinal))
+                action = "Edited";
+            else if (functionName.StartsWith("delete_", StringComparison.Ordinal))
+                action = "Deleted";
+            else
+                return;
+
+            // Only notify on success
+            if (!toolResult.Contains("\"Success\":true", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            // Resolve the role from the FunctionRoleMap
+            if (!FunctionRoleMap.TryGetValue(functionName, out string roleName) || roleName == null)
+                return;
+
+            try
+            {
+                using var scope = _serviceScopeFactory.CreateScope();
+                var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+
+                string message = $"{roleName} record has been {action.ToLower()} (via AI Assistant).";
+
+                await notificationService.AddNotificationAsync(
+                    message: message,
+                    targetUserId: userId,
+                    targetRole: roleName,
+                    entityName: roleName,
+                    entityAction: action);
+            }
+            catch
+            {
+                // Notification failure must never break the chatbot response
+            }
+        }
+
+        #region Notification Tools
+
+        private async Task<string> ManageNotifications(JsonElement args, IList<string> userRoles, string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return Serialize(new { Success = false, Message = "User not identified." });
+
+            string action = args.TryGetProperty("action", out var a) ? a.GetString() : "list";
+
+            return action switch
+            {
+                "list" => await NotifList(args, userRoles, userId),
+                "count_unread" => await NotifCountUnread(userRoles, userId),
+                "mark_read" => await NotifSetRead(args, userId, true),
+                "mark_unread" => await NotifSetRead(args, userId, false),
+                "delete" => await NotifDelete(args, userId),
+                "bulk_delete" => await NotifBulkDelete(args, userRoles, userId),
+                _ => Serialize(new { Success = false, Message = $"Unknown action '{action}'. Valid actions: list, count_unread, mark_read, mark_unread, delete, bulk_delete." })
+            };
+        }
+
+        private async Task<string> NotifList(JsonElement args, IList<string> userRoles, string userId)
+        {
+            int page = args.TryGetProperty("page", out var p) && p.ValueKind == JsonValueKind.Number ? p.GetInt32() : 1;
+            int pageSize = args.TryGetProperty("pageSize", out var ps) && ps.ValueKind == JsonValueKind.Number ? ps.GetInt32() : 10;
+            if (pageSize > 50) pageSize = 50;
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var svc = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var (items, totalCount, unreadCount) = await svc.GetNotificationsAsync(userId, userRoles, page, pageSize);
+
+            var notificationIds = items.Select(n => n.NotificationId).ToList();
+            var readStatuses = await ctx.NotificationReadStatus
+                .Where(s => s.UserId == userId && notificationIds.Contains(s.NotificationId))
+                .ToDictionaryAsync(s => s.NotificationId, s => s.IsRead);
+
+            var projected = items.Select(n => new
+            {
+                n.NotificationId,
+                n.Message,
+                CreatedDateTime = n.CreatedDateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                n.EntityName,
+                n.EntityAction,
+                IsRead = readStatuses.TryGetValue(n.NotificationId, out bool read) && read
+            });
+
+            return Serialize(new { Success = true, TotalCount = totalCount, UnreadCount = unreadCount, Page = page, PageSize = pageSize, Items = projected });
+        }
+
+        private async Task<string> NotifCountUnread(IList<string> userRoles, string userId)
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var svc = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            int count = await svc.GetUnreadCountAsync(userId, userRoles);
+            return Serialize(new { Success = true, UnreadCount = count });
+        }
+
+        private async Task<string> NotifSetRead(JsonElement args, string userId, bool targetState)
+        {
+            int notificationId = GetInt(args, "notificationId");
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var svc = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var existing = await ctx.NotificationReadStatus
+                .FirstOrDefaultAsync(s => s.NotificationId == notificationId && s.UserId == userId);
+
+            bool currentlyRead = existing != null && existing.IsRead;
+
+            if (currentlyRead == targetState)
+                return Serialize(new { Success = true, Message = $"Notification {notificationId} was already {(targetState ? "read" : "unread")}.", IsRead = targetState });
+
+            bool isNowRead = await svc.ToggleReadAsync(notificationId, userId);
+            if (isNowRead != targetState)
+                isNowRead = await svc.ToggleReadAsync(notificationId, userId);
+
+            string label = targetState ? "read" : "unread";
+            return Serialize(new { Success = true, Message = $"Notification {notificationId} marked as {label}.", IsRead = isNowRead });
+        }
+
+        private async Task<string> NotifDelete(JsonElement args, string userId)
+        {
+            int notificationId = GetInt(args, "notificationId");
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var svc = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            await svc.DeleteNotificationAsync(notificationId, userId);
+
+            return Serialize(new { Success = true, Message = $"Notification {notificationId} deleted." });
+        }
+
+        private async Task<string> NotifBulkDelete(JsonElement args, IList<string> userRoles, string userId)
+        {
+            string mode = args.TryGetProperty("mode", out var m) ? m.GetString() : "all";
+
+            using var scope = _serviceScopeFactory.CreateScope();
+            var svc = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var (allItems, _, _) = await svc.GetNotificationsAsync(userId, userRoles, 1, 10000);
+
+            int deletedCount = 0;
+            foreach (var item in allItems)
+            {
+                if (mode == "read")
+                {
+                    var status = await ctx.NotificationReadStatus
+                        .FirstOrDefaultAsync(s => s.NotificationId == item.NotificationId && s.UserId == userId);
+                    if (status == null || !status.IsRead)
+                        continue;
+                }
+
+                await svc.DeleteNotificationAsync(item.NotificationId, userId);
+                deletedCount++;
+            }
+
+            return Serialize(new { Success = true, Message = $"{deletedCount} notification(s) deleted.", DeletedCount = deletedCount });
+        }
+
+        #endregion
 
         #region Helpers
 
@@ -2540,6 +2739,24 @@ namespace coderush.Services
 
             // Dashboard
             AddTool("get_dashboard_data", "Get dashboard summary data including total counts of all entities and total order values");
+
+            // Notifications – single unified tool to stay within the 128-tool OpenAI limit
+            AddTool("manage_notifications",
+                "Manage the current user's notifications. Set 'action' to one of: " +
+                "'list' (list notifications, optional page/pageSize), " +
+                "'count_unread' (get unread count), " +
+                "'mark_read' (requires notificationId), " +
+                "'mark_unread' (requires notificationId), " +
+                "'delete' (requires notificationId), " +
+                "'bulk_delete' (requires mode: 'all' or 'read').",
+                Params(new Dictionary<string, object>
+                {
+                    ["action"] = Str("The action to perform: list, count_unread, mark_read, mark_unread, delete, bulk_delete"),
+                    ["notificationId"] = Int("The notification ID (required for mark_read, mark_unread, delete)"),
+                    ["page"] = Int("Page number for list action (default 1)"),
+                    ["pageSize"] = Int("Items per page for list action, max 50 (default 10)"),
+                    ["mode"] = Str("For bulk_delete: 'all' to delete all, 'read' to delete only read ones")
+                }, "action"));
 
             return tools;
         }
