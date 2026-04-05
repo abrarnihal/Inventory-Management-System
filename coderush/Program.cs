@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace coderush
@@ -20,15 +21,42 @@ namespace coderush
     {
         public static async Task Main(string[] args)
         {
+            // Load .env file so secrets stay out of appsettings.json
+            LoadEnvFile(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".env"));
+            LoadEnvFile(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
+
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             
             builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
+            // Determine the database connection string to use.
+            // In Development, try the Azure connection first; if it is unreachable,
+            // fall back to the LocalDB connection so developers can work offline.
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            if (builder.Environment.IsDevelopment())
+            {
+                string localConnection = builder.Configuration.GetConnectionString("LocalConnection");
+                if (!string.IsNullOrEmpty(localConnection))
+                {
+                    try
+                    {
+                        using var testConn = new Microsoft.Data.SqlClient.SqlConnection(connectionString);
+                        testConn.Open();
+                    }
+                    catch
+                    {
+                        Console.WriteLine("⚠ Azure SQL database is unavailable – falling back to LocalDB.");
+                        connectionString = localConnection;
+                    }
+                }
+            }
+
             // Configure services
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
 
             // Get Identity Default Options
             IConfigurationSection identityDefaultOptionsConfigurationSection = builder.Configuration.GetSection("IdentityDefaultOptions");
@@ -243,6 +271,27 @@ namespace coderush
             }
 
             app.Run();
+        }
+
+        private static void LoadEnvFile(string path)
+        {
+            if (!File.Exists(path))
+                return;
+
+            foreach (string line in File.ReadAllLines(path))
+            {
+                string trimmed = line.Trim();
+                if (trimmed.Length == 0 || trimmed.StartsWith('#'))
+                    continue;
+
+                int index = trimmed.IndexOf('=');
+                if (index <= 0)
+                    continue;
+
+                string key = trimmed[..index].Trim();
+                string value = trimmed[(index + 1)..].Trim();
+                Environment.SetEnvironmentVariable(key, value);
+            }
         }
     }
 }
