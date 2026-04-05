@@ -1,6 +1,7 @@
 ﻿using coderush.Data;
 using coderush.Models;
 using coderush.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -53,7 +54,8 @@ namespace coderush.Services.UnitTests
                 _httpClient,
                 _mockOptions.Object,
                 _mockContext.Object,
-                _mockNumberSequence.Object);
+                _mockNumberSequence.Object,
+                new Mock<IServiceScopeFactory>().Object);
         }
 
         /// <summary>
@@ -166,7 +168,7 @@ namespace coderush.Services.UnitTests
             var httpResponse = new HttpResponseMessage
             {
                 StatusCode = statusCode,
-                Content = new StringContent("{\"error\": \"API Error\"}", Encoding.UTF8, "application/json")
+                Content = new StringContent("{\"error\": {\"message\": \"API Error\"}}", Encoding.UTF8, "application/json")
             };
 
             _mockHttpMessageHandler
@@ -380,7 +382,7 @@ namespace coderush.Services.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Contains("I'm sorry, I encountered an error communicating with the AI service"));
+            Assert.IsTrue(result.Contains("I'm sorry, the AI service returned an error"));
         }
 
         /// <summary>
@@ -755,7 +757,7 @@ namespace coderush.Services.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Contains("I'm sorry, I encountered an error communicating with the AI service"));
+            Assert.IsTrue(result.Contains("I'm sorry, the AI service returned an error"));
         }
 
         /// <summary>

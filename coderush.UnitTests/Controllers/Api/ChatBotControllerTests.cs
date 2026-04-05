@@ -215,7 +215,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, "test message", string.Empty);
             // Assert
@@ -257,7 +257,7 @@ namespace coderush.Controllers.Api.UnitTests
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
             mockFileParserService.Setup(s => s.IsSupported("test.txt")).Returns(true);
             mockFileParserService.Setup(s => s.ExtractTextAsync(mockFile.Object)).ReturnsAsync("File content");
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(files, "test message", string.Empty);
             // Assert
@@ -302,7 +302,7 @@ namespace coderush.Controllers.Api.UnitTests
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
             mockFileParserService.Setup(s => s.IsSupported(It.IsAny<string>())).Returns(true);
             mockFileParserService.Setup(s => s.ExtractTextAsync(It.IsAny<IFormFile>())).ReturnsAsync("File content");
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(files, "test message", string.Empty);
             // Assert
@@ -346,7 +346,7 @@ namespace coderush.Controllers.Api.UnitTests
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
             mockFileParserService.Setup(s => s.IsSupported("test.txt")).Returns(true);
             mockFileParserService.Setup(s => s.ExtractTextAsync(mockFile.Object)).ReturnsAsync("File content");
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(files, "test message", string.Empty);
             // Assert
@@ -392,7 +392,7 @@ namespace coderush.Controllers.Api.UnitTests
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
             mockFileParserService.Setup(s => s.IsSupported("valid.txt")).Returns(true);
             mockFileParserService.Setup(s => s.ExtractTextAsync(mockFileValid.Object)).ReturnsAsync("File content");
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(files, "test message", string.Empty);
             // Assert
@@ -440,7 +440,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, "test message", historyJson);
             // Assert
@@ -449,7 +449,7 @@ namespace coderush.Controllers.Api.UnitTests
             var response = okResult.Value as ChatResponse;
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Success);
-            mockChatBotService.Verify(s => s.ChatAsync("test message", It.Is<List<ChatMessageDto>?>(h => h != null && h.Count == 2), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>()), Times.Once);
+            mockChatBotService.Verify(s => s.ChatAsync("test message", It.Is<List<ChatMessageDto>?>(h => h != null && h.Count == 2), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, "test message", null!);
             // Assert
@@ -482,7 +482,7 @@ namespace coderush.Controllers.Api.UnitTests
             var response = okResult.Value as ChatResponse;
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Success);
-            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>()), Times.Once);
+            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, "test message", string.Empty);
             // Assert
@@ -515,7 +515,7 @@ namespace coderush.Controllers.Api.UnitTests
             var response = okResult.Value as ChatResponse;
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Success);
-            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>()), Times.Once);
+            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         /// <summary>
@@ -669,7 +669,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ThrowsAsync(new Exception("Chat service failed"));
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ThrowsAsync(new Exception("Chat service failed"));
             // Act
             var result = await controller.SendWithFiles(null!, "test message", string.Empty);
             // Assert
@@ -742,7 +742,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(new List<IFormFile>(), "test message", string.Empty);
             // Assert
@@ -776,7 +776,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, longMessage, string.Empty);
             // Assert
@@ -785,7 +785,7 @@ namespace coderush.Controllers.Api.UnitTests
             var response = okResult.Value as ChatResponse;
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Success);
-            mockChatBotService.Verify(s => s.ChatAsync(longMessage, It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>()), Times.Once);
+            mockChatBotService.Verify(s => s.ChatAsync(longMessage, It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         /// <summary>
@@ -810,7 +810,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { "User" });
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, specialMessage, string.Empty);
             // Assert
@@ -848,7 +848,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(roles);
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(null!, "test message", string.Empty);
             // Assert
@@ -857,7 +857,7 @@ namespace coderush.Controllers.Api.UnitTests
             var response = okResult.Value as ChatResponse;
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Success);
-            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.Is<IList<string>>(r => r.Count == 3 && r.Contains("Admin") && r.Contains("User") && r.Contains("Manager")), It.IsAny<List<ChatFileContent>>()), Times.Once);
+            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.Is<IList<string>>(r => r.Count == 3 && r.Contains("Admin") && r.Contains("User") && r.Contains("Manager")), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         /// <summary>
@@ -896,7 +896,7 @@ namespace coderush.Controllers.Api.UnitTests
             mockFileParserService.Setup(s => s.IsSupported("file2.md")).Returns(true);
             mockFileParserService.Setup(s => s.ExtractTextAsync(mockFile1.Object)).ReturnsAsync("Content 1");
             mockFileParserService.Setup(s => s.ExtractTextAsync(mockFile2.Object)).ReturnsAsync("Content 2");
-            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(s => s.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>?>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             // Act
             var result = await controller.SendWithFiles(files, "test message", string.Empty);
             // Assert
@@ -905,7 +905,7 @@ namespace coderush.Controllers.Api.UnitTests
             var response = okResult.Value as ChatResponse;
             Assert.IsNotNull(response);
             Assert.IsTrue(response.Success);
-            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.IsAny<IList<string>>(), It.Is<List<ChatFileContent>>(f => f.Count == 2 && f[0].FileName == "file1.txt" && f[0].Content == "Content 1" && f[1].FileName == "file2.md" && f[1].Content == "Content 2")), Times.Once);
+            mockChatBotService.Verify(s => s.ChatAsync("test message", null, It.IsAny<IList<string>>(), It.Is<List<ChatFileContent>>(f => f.Count == 2 && f[0].FileName == "file1.txt" && f[0].Content == "Content 1" && f[1].FileName == "file2.md" && f[1].Content == "Content 2"), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         private static Mock<UserManager<ApplicationUser>> MockUserManager()
@@ -1082,7 +1082,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(userRoles);
-            mockChatBotService.Setup(cbs => cbs.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ThrowsAsync(new Exception("ChatBot service error"));
+            mockChatBotService.Setup(cbs => cbs.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ThrowsAsync(new Exception("ChatBot service error"));
             var mockOrchestrator = new Mock<IChatResponseOrchestrator>();
             var controller = new ChatBotController(mockChatBotService.Object, mockFileParserService.Object, mockUserManager.Object, mockContext.Object, mockOrchestrator.Object);
             controller.ControllerContext = new ControllerContext
@@ -1128,7 +1128,7 @@ namespace coderush.Controllers.Api.UnitTests
             var expectedBotResponse = "This is the bot's response";
             mockUserManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(userRoles);
-            mockChatBotService.Setup(cbs => cbs.ChatAsync("Hello, bot!", It.IsAny<List<ChatMessageDto>>(), userRoles, It.IsAny<List<ChatFileContent>>())).ReturnsAsync(expectedBotResponse);
+            mockChatBotService.Setup(cbs => cbs.ChatAsync("Hello, bot!", It.IsAny<List<ChatMessageDto>>(), userRoles, It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync(expectedBotResponse);
             var mockOrchestrator = new Mock<IChatResponseOrchestrator>();
             var controller = new ChatBotController(mockChatBotService.Object, mockFileParserService.Object, mockUserManager.Object, mockContext.Object, mockOrchestrator.Object);
             controller.ControllerContext = new ControllerContext
@@ -1185,7 +1185,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(userRoles);
-            mockChatBotService.Setup(cbs => cbs.ChatAsync(It.IsAny<string>(), history, It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Response with history");
+            mockChatBotService.Setup(cbs => cbs.ChatAsync(It.IsAny<string>(), history, It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Response with history");
             var mockOrchestrator = new Mock<IChatResponseOrchestrator>();
             var controller = new ChatBotController(mockChatBotService.Object, mockFileParserService.Object, mockUserManager.Object, mockContext.Object, mockOrchestrator.Object);
             controller.ControllerContext = new ControllerContext
@@ -1203,7 +1203,7 @@ namespace coderush.Controllers.Api.UnitTests
             // Act
             var result = await controller.Send(request);
             // Assert
-            mockChatBotService.Verify(cbs => cbs.ChatAsync("New message", history, userRoles, It.IsAny<List<ChatFileContent>>()), Times.Once);
+            mockChatBotService.Verify(cbs => cbs.ChatAsync("New message", history, userRoles, It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>()), Times.Once);
         }
 
         /// <summary>
@@ -1230,7 +1230,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             mockUserManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
             mockUserManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(userRoles);
-            mockChatBotService.Setup(cbs => cbs.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Bot response");
+            mockChatBotService.Setup(cbs => cbs.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Bot response");
             var mockOrchestrator = new Mock<IChatResponseOrchestrator>();
             var controller = new ChatBotController(mockChatBotService.Object, mockFileParserService.Object, mockUserManager.Object, mockContext.Object, mockOrchestrator.Object);
             controller.ControllerContext = new ControllerContext
@@ -1306,7 +1306,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             _mockUserManager!.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(testUser);
             _mockUserManager.Setup(x => x.GetRolesAsync(testUser)).ReturnsAsync(new List<string> { "User" });
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             // Act
             var result = await _controller!.SendWithFile(null, "test message", "[]");
             // Assert
@@ -1342,7 +1342,7 @@ namespace coderush.Controllers.Api.UnitTests
             mockFile.Setup(f => f.ContentType).Returns("text/plain");
             _mockFileParserService!.Setup(x => x.IsSupported(fileName)).Returns(true);
             _mockFileParserService.Setup(x => x.ExtractTextAsync(It.IsAny<IFormFile>())).ReturnsAsync("extracted text");
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             // Act
             var result = await _controller!.SendWithFile(mockFile.Object, "test message", "[]");
             // Assert
@@ -1402,7 +1402,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             _mockUserManager!.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(testUser);
             _mockUserManager.Setup(x => x.GetRolesAsync(testUser)).ReturnsAsync(new List<string> { "User" });
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             // Act
             var result = await _controller!.SendWithFile(null, "test message", historyJson);
             // Assert
@@ -1428,7 +1428,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             _mockUserManager!.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(testUser);
             _mockUserManager.Setup(x => x.GetRolesAsync(testUser)).ReturnsAsync(new List<string> { "User" });
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             var historyJson = "[{\"role\":\"user\",\"content\":\"Hello\"},{\"role\":\"assistant\",\"content\":\"Hi\"}]";
             // Act
             var result = await _controller!.SendWithFile(null, "test message", historyJson);
@@ -1489,7 +1489,7 @@ namespace coderush.Controllers.Api.UnitTests
             var mockFile = new Mock<IFormFile>();
             mockFile.Setup(f => f.FileName).Returns("test.txt");
             mockFile.Setup(f => f.Length).Returns(0);
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             // Act
             var result = await _controller!.SendWithFile(mockFile.Object, "test message", "[]");
             // Assert
@@ -1522,7 +1522,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             _mockUserManager!.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(testUser);
             _mockUserManager.Setup(x => x.GetRolesAsync(testUser)).ReturnsAsync(new List<string> { "User" });
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             // Act
             var result = await _controller!.SendWithFile(null, message, "[]");
             // Assert
@@ -1548,7 +1548,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             _mockUserManager!.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(testUser);
             _mockUserManager.Setup(x => x.GetRolesAsync(testUser)).ReturnsAsync(new List<string> { "User" });
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ReturnsAsync("Test response");
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ReturnsAsync("Test response");
             var longMessage = new string ('a', 10000);
             // Act
             var result = await _controller!.SendWithFile(null, longMessage, "[]");
@@ -1575,7 +1575,7 @@ namespace coderush.Controllers.Api.UnitTests
             };
             _mockUserManager!.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(testUser);
             _mockUserManager.Setup(x => x.GetRolesAsync(testUser)).ReturnsAsync(new List<string> { "User" });
-            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>())).ThrowsAsync(new Exception("Test exception"));
+            _mockChatBotService!.Setup(x => x.ChatAsync(It.IsAny<string>(), It.IsAny<List<ChatMessageDto>>(), It.IsAny<IList<string>>(), It.IsAny<List<ChatFileContent>>(), It.IsAny<CancellationToken>(), It.IsAny<string>())).ThrowsAsync(new Exception("Test exception"));
             // Act
             var result = await _controller!.SendWithFile(null, "test message", "[]");
             // Assert

@@ -25,6 +25,31 @@
         <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
+        @if (Model != null)
+        {
+            <div class="notification-wrapper">
+                <a href="javascript:void(0);" id="notification-bell" class="notification-bell" title="Notifications">
+                    <i class="fa fa-bell"></i>
+                    <span class="notification-badge" id="notification-badge" style="display:none;">0</span>
+                </a>
+                <div id="notification-dropdown" class="notification-dropdown" style="display:none;">
+                    <div class="notification-header">
+                        <span class="notification-header-title">Notifications</span>
+                        <button id="notif-search-btn" class="notif-search-btn" title="Search notifications">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="notif-search-bar" class="notif-search-bar" style="display:none;">
+                        <input type="text" id="notif-search-input" class="notif-search-input" placeholder="Search notifications..." autocomplete="off" />
+                        <button id="notif-search-clear" class="notif-search-clear" title="Clear search">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="notification-list" class="notification-list"></div>
+                    <div id="notification-footer" class="notification-footer"></div>
+                </div>
+            </div>
+        }
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 
