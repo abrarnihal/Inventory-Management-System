@@ -13,10 +13,15 @@
 
 
   <ItemGroup>
+    <Compile Remove="Tools\**" />
     <Compile Remove="Views\Home\**" />
+    <Content Remove="Tools\**" />
     <Content Remove="Views\Home\**" />
+    <EmbeddedResource Remove="Tools\**" />
     <EmbeddedResource Remove="Views\Home\**" />
+    <None Remove="Tools\**" />
     <None Remove="Views\Home\**" />
+    <TypeScriptCompile Remove="Tools\**" />
     <TypeScriptCompile Remove="Views\Home\**" />
   </ItemGroup>
 
@@ -39,11 +44,6 @@
   <ItemGroup>
     <InternalsVisibleTo Include="coderush.UnitTests" />
     <InternalsVisibleTo Include="coderush.IntegrationTests" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Tools\" />
   </ItemGroup>
 
 </Project>
