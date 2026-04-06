@@ -3,6 +3,9 @@ on:
   push:
     branches:
     - main
+permissions:
+  id-token: write
+  contents: read
 env:
   AZURE_WEBAPP_NAME: sharpcoders
   AZURE_WEBAPP_PACKAGE_PATH: coderush\published
@@ -40,9 +43,14 @@ jobs:
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ vars.sharpcoders_CLIENT_ID_ED77 }}
+        tenant-id: ${{ vars.sharpcoders_TENANT_ID_ED77 }}
+        subscription-id: ${{ vars.sharpcoders_SUBSCRIPTION_ID_ED77 }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
