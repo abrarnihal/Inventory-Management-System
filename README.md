@@ -1,16 +1,22 @@
 # Asp.Net-Core-Inventory-Order-Management-System
-Project - Asp.Net Core implementation of inventory order management system. warehouse, product, vendor, customer, purchase order, sales order, shipment, goods received and more.
+Project - Asp.Net Core implementation of inventory (order) management system. warehouse, product, vendor, customer, purchase order, sales order, shipment, goods received and more.
 
 
-# Features
+# Done by - Sharp # Coders
 
-- Asp.Net Core Mvc
+- Leader             --> Abrar Faiyaz Nihal           --> @abrarnihal
+- Team Secretary     --> Samikshya Pun                --> @ZSammyy
+- Developer # 1      --> Farzan Ahmed Hossain         --> @FarzanAhmedHossain
+- Developer # 2      --> Harunur Rashid Emon          --> @Harunemon41
+- Tester             --> Rimel Pinak                  --> @pinakpaul232
+
+# Program Features
+
+- Asp.Net Core 
 - EF / Entity Framework
 - Code First
 - C#
-- Beautiful Bootstrap
-- Web API + JQuery
-- SendGrid
+- CSS, HTML, JavaScript
 - Upload Profile Picture
 - Edit Profile
 - Change Password
@@ -20,6 +26,7 @@ Project - Asp.Net Core implementation of inventory order management system. ware
 # Functional Features
 
 - Dashboard / Chart Example
+- Multipurpose AI-chatbot assistant
 - Sales
   - Customer Type
   - Customer
@@ -54,7 +61,10 @@ Project - Asp.Net Core implementation of inventory order management system. ware
   - Change Password
   - Role
   - Change Role
+	 
+# Deployed version 
 
+- **Available here** https://sharpcoders.azurewebsites.net/
 
 # Development Tools & Environment
 
