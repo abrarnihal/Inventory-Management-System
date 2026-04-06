@@ -3,37 +3,47 @@ on:
   push:
     branches:
     - main
+
+# OIDC is no longer needed when using a Publish Profile
 permissions:
-  id-token: write
   contents: read
+
 env:
   AZURE_WEBAPP_NAME: sharpcoders
   AZURE_WEBAPP_PACKAGE_PATH: coderush\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 10.0.x
   WORKING_DIRECTORY: coderush
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+
     - name: Restore
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+
     - name: Build
       run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+
     - name: Test
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+
     - name: Publish Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
   deploy:
     runs-on: windows-latest
     needs: build
@@ -43,14 +53,11 @@ jobs:
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        client-id: ${{ vars.sharpcoders_CLIENT_ID_ED77 }}
-        tenant-id: ${{ vars.sharpcoders_TENANT_ID_ED77 }}
-        subscription-id: ${{ vars.sharpcoders_SUBSCRIPTION_ID_ED77 }}
+
+    # Uses App Service publish profile secret instead of azure/login
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
