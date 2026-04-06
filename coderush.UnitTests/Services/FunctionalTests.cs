@@ -439,5 +439,457 @@ namespace coderush.Services.UnitTests
             Assert.AreEqual("Super", capturedProfile.FirstName);
             Assert.AreEqual("Admin", capturedProfile.LastName);
         }
+
+        #region InitAppData
+
+        /// <summary>
+        /// Tests that InitAppData seeds all expected reference data into the database.
+        /// </summary>
+        [TestMethod]
+        public async Task InitAppData_WhenCalled_SeedsAllReferenceTypes()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
+                .Options;
+            using var context = new ApplicationDbContext(dbOptions);
+
+            var functional = new Functional(
+                userManagerMock.Object,
+                roleManagerMock.Object,
+                context,
+                signInManagerMock.Object,
+                rolesMock.Object,
+                optionsMock.Object);
+
+            // Act
+            await functional.InitAppData();
+
+            // Assert
+            Assert.AreEqual(1, context.BillType.Count());
+            Assert.AreEqual(1, context.Branch.Count());
+            Assert.AreEqual(1, context.Warehouse.Count());
+            Assert.AreEqual(1, context.CashBank.Count());
+            Assert.AreEqual(1, context.Currency.Count());
+            Assert.AreEqual(1, context.InvoiceType.Count());
+            Assert.AreEqual(1, context.PaymentType.Count());
+            Assert.AreEqual(1, context.PurchaseType.Count());
+            Assert.AreEqual(1, context.SalesType.Count());
+            Assert.AreEqual(1, context.ShipmentType.Count());
+            Assert.AreEqual(1, context.UnitOfMeasure.Count());
+            Assert.AreEqual(1, context.ProductType.Count());
+            Assert.AreEqual(1, context.CustomerType.Count());
+            Assert.AreEqual(1, context.VendorType.Count());
+        }
+
+        /// <summary>
+        /// Tests that InitAppData seeds 20 products.
+        /// </summary>
+        [TestMethod]
+        public async Task InitAppData_WhenCalled_Seeds20Products()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
+                .Options;
+            using var context = new ApplicationDbContext(dbOptions);
+
+            var functional = new Functional(
+                userManagerMock.Object,
+                roleManagerMock.Object,
+                context,
+                signInManagerMock.Object,
+                rolesMock.Object,
+                optionsMock.Object);
+
+            // Act
+            await functional.InitAppData();
+
+            // Assert
+            Assert.AreEqual(20, context.Product.Count());
+            Assert.IsTrue(context.Product.Any(p => p.ProductName == "Chai"));
+            Assert.IsTrue(context.Product.Any(p => p.ProductName == "Sir Rodney's Marmalade"));
+        }
+
+        /// <summary>
+        /// Tests that InitAppData seeds 20 customers.
+        /// </summary>
+        [TestMethod]
+        public async Task InitAppData_WhenCalled_Seeds20Customers()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
+                .Options;
+            using var context = new ApplicationDbContext(dbOptions);
+
+            var functional = new Functional(
+                userManagerMock.Object,
+                roleManagerMock.Object,
+                context,
+                signInManagerMock.Object,
+                rolesMock.Object,
+                optionsMock.Object);
+
+            // Act
+            await functional.InitAppData();
+
+            // Assert
+            Assert.AreEqual(20, context.Customer.Count());
+            Assert.IsTrue(context.Customer.Any(c => c.CustomerName == "Hanari Carnes"));
+            Assert.IsTrue(context.Customer.Any(c => c.CustomerName == "Old World Delicatessen"));
+        }
+
+        /// <summary>
+        /// Tests that InitAppData seeds 19 vendors.
+        /// </summary>
+        [TestMethod]
+        public async Task InitAppData_WhenCalled_Seeds19Vendors()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
+                .Options;
+            using var context = new ApplicationDbContext(dbOptions);
+
+            var functional = new Functional(
+                userManagerMock.Object,
+                roleManagerMock.Object,
+                context,
+                signInManagerMock.Object,
+                rolesMock.Object,
+                optionsMock.Object);
+
+            // Act
+            await functional.InitAppData();
+
+            // Assert
+            Assert.AreEqual(19, context.Vendor.Count());
+            Assert.IsTrue(context.Vendor.Any(v => v.VendorName == "Exotic Liquids"));
+            Assert.IsTrue(context.Vendor.Any(v => v.VendorName == "New England Seafood Cannery"));
+        }
+
+        /// <summary>
+        /// Tests that InitAppData seeds a currency with the correct code.
+        /// </summary>
+        [TestMethod]
+        public async Task InitAppData_WhenCalled_SeedsCurrencyWithUSD()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
+                .Options;
+            using var context = new ApplicationDbContext(dbOptions);
+
+            var functional = new Functional(
+                userManagerMock.Object,
+                roleManagerMock.Object,
+                context,
+                signInManagerMock.Object,
+                rolesMock.Object,
+                optionsMock.Object);
+
+            // Act
+            await functional.InitAppData();
+
+            // Assert
+            var currency = context.Currency.First();
+            Assert.AreEqual("Default", currency.CurrencyName);
+            Assert.AreEqual("USD", currency.CurrencyCode);
+        }
+
+        #endregion
+
+        #region UploadFile
+
+        /// <summary>
+        /// Tests that UploadFile uploads a file and returns the generated filename.
+        /// </summary>
+        [TestMethod]
+        public async Task UploadFile_ValidFile_UploadsAndReturnsFileName()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+
+            var tempDir = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                var mockEnv = new Mock<IWebHostEnvironment>();
+                mockEnv.Setup(e => e.WebRootPath).Returns(tempDir);
+
+                var fileContent = new byte[] { 1, 2, 3, 4, 5 };
+                var mockFile = new Mock<IFormFile>();
+                mockFile.Setup(f => f.Length).Returns(fileContent.Length);
+                mockFile.Setup(f => f.FileName).Returns("test.png");
+                mockFile.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), default))
+                    .Callback<Stream, CancellationToken>((stream, ct) => stream.Write(fileContent, 0, fileContent.Length))
+                    .Returns(Task.CompletedTask);
+
+                var functional = new Functional(
+                    userManagerMock.Object,
+                    roleManagerMock.Object,
+                    contextMock.Object,
+                    signInManagerMock.Object,
+                    rolesMock.Object,
+                    optionsMock.Object);
+
+                // Act
+                var result = await functional.UploadFile(new List<IFormFile> { mockFile.Object }, mockEnv.Object, "uploads");
+
+                // Assert
+                Assert.IsFalse(string.IsNullOrEmpty(result));
+                Assert.IsTrue(result.EndsWith(".png"));
+                Assert.IsTrue(System.Guid.TryParse(Path.GetFileNameWithoutExtension(result), out _));
+            }
+            finally
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+
+        /// <summary>
+        /// Tests that UploadFile returns empty string when the file list is empty.
+        /// </summary>
+        [TestMethod]
+        public async Task UploadFile_EmptyFileList_ReturnsEmptyString()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+
+            var tempDir = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                var mockEnv = new Mock<IWebHostEnvironment>();
+                mockEnv.Setup(e => e.WebRootPath).Returns(tempDir);
+
+                var functional = new Functional(
+                    userManagerMock.Object,
+                    roleManagerMock.Object,
+                    contextMock.Object,
+                    signInManagerMock.Object,
+                    rolesMock.Object,
+                    optionsMock.Object);
+
+                // Act
+                var result = await functional.UploadFile(new List<IFormFile>(), mockEnv.Object, "uploads");
+
+                // Assert
+                Assert.AreEqual("", result);
+            }
+            finally
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+
+        /// <summary>
+        /// Tests that UploadFile skips files with zero length.
+        /// </summary>
+        [TestMethod]
+        public async Task UploadFile_ZeroLengthFile_SkipsFile()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+
+            var tempDir = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                var mockEnv = new Mock<IWebHostEnvironment>();
+                mockEnv.Setup(e => e.WebRootPath).Returns(tempDir);
+
+                var mockFile = new Mock<IFormFile>();
+                mockFile.Setup(f => f.Length).Returns(0);
+                mockFile.Setup(f => f.FileName).Returns("empty.txt");
+
+                var functional = new Functional(
+                    userManagerMock.Object,
+                    roleManagerMock.Object,
+                    contextMock.Object,
+                    signInManagerMock.Object,
+                    rolesMock.Object,
+                    optionsMock.Object);
+
+                // Act
+                var result = await functional.UploadFile(new List<IFormFile> { mockFile.Object }, mockEnv.Object, "uploads");
+
+                // Assert
+                Assert.AreEqual("", result);
+            }
+            finally
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+
+        /// <summary>
+        /// Tests that UploadFile with multiple files returns the last file's name.
+        /// </summary>
+        [TestMethod]
+        public async Task UploadFile_MultipleFiles_ReturnsLastFileName()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+
+            var tempDir = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                var mockEnv = new Mock<IWebHostEnvironment>();
+                mockEnv.Setup(e => e.WebRootPath).Returns(tempDir);
+
+                var mockFile1 = CreateMockFormFile("file1.png", new byte[] { 1, 2 });
+                var mockFile2 = CreateMockFormFile("file2.jpg", new byte[] { 3, 4 });
+
+                var functional = new Functional(
+                    userManagerMock.Object,
+                    roleManagerMock.Object,
+                    contextMock.Object,
+                    signInManagerMock.Object,
+                    rolesMock.Object,
+                    optionsMock.Object);
+
+                // Act
+                var result = await functional.UploadFile(
+                    new List<IFormFile> { mockFile1.Object, mockFile2.Object }, mockEnv.Object, "uploads");
+
+                // Assert
+                Assert.IsTrue(result.EndsWith(".jpg"), "Should return the last uploaded file name");
+            }
+            finally
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+
+        /// <summary>
+        /// Tests that UploadFile creates the upload directory if it doesn't exist.
+        /// </summary>
+        [TestMethod]
+        public async Task UploadFile_UploadDirectoryDoesNotExist_CreatesDirectory()
+        {
+            // Arrange
+            var userManagerMock = CreateMockUserManager();
+            var roleManagerMock = CreateMockRoleManager();
+            var signInManagerMock = CreateMockSignInManager(userManagerMock.Object);
+            var rolesMock = new Mock<IRoles>();
+            var optionsMock = new Mock<IOptions<SuperAdminDefaultOptions>>();
+            optionsMock.Setup(o => o.Value).Returns(new SuperAdminDefaultOptions());
+
+            var contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+
+            var tempDir = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                var mockEnv = new Mock<IWebHostEnvironment>();
+                mockEnv.Setup(e => e.WebRootPath).Returns(tempDir);
+
+                var mockFile = CreateMockFormFile("test.png", new byte[] { 1 });
+
+                var functional = new Functional(
+                    userManagerMock.Object,
+                    roleManagerMock.Object,
+                    contextMock.Object,
+                    signInManagerMock.Object,
+                    rolesMock.Object,
+                    optionsMock.Object);
+
+                var uploadFolder = "newFolder";
+
+                // Act
+                await functional.UploadFile(new List<IFormFile> { mockFile.Object }, mockEnv.Object, uploadFolder);
+
+                // Assert
+                Assert.IsTrue(Directory.Exists(Path.Combine(tempDir, uploadFolder)));
+            }
+            finally
+            {
+                Directory.Delete(tempDir, true);
+            }
+        }
+
+        private static Mock<IFormFile> CreateMockFormFile(string fileName, byte[] content)
+        {
+            var mockFile = new Mock<IFormFile>();
+            mockFile.Setup(f => f.Length).Returns(content.Length);
+            mockFile.Setup(f => f.FileName).Returns(fileName);
+            mockFile.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), default))
+                .Callback<Stream, CancellationToken>((stream, ct) => stream.Write(content, 0, content.Length))
+                .Returns(Task.CompletedTask);
+            return mockFile;
+        }
+
+        #endregion
     }
 }
