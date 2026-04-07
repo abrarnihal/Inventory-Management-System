@@ -69,5 +69,5 @@ Project - Asp.Net Core implementation of inventory (order) management system. wa
 # Development Tools & Environment
 
 - **Visual Studio 2022/26 (Community Edition)**. (https://visualstudio.microsoft.com/) 
-- **SQL Server Management Studio (SSMS)** (https://aka.ms/ssms)
-- **SQL Server Express/Std Dev 2022/26** (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+- **SQL Server Management Studio (SSMS)**. (https://aka.ms/ssms)
+- **SQL Server Express/Std Dev 2025**. (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
