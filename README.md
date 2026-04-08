@@ -1,4 +1,4 @@
-# Asp.Net-Core-Inventory-Order-Management-System
+# Asp.Net-Core-Inventory-Management-System
 Name : InvenTory
 Project - Asp.Net Core implementation of inventory (order) management system. warehouse, product, vendor, customer, purchase order, sales order, shipment, goods received and more.
 
