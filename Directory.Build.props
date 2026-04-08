@@ -1,8 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <!-- Shorten intermediate output path to avoid Windows MAX_PATH (260 char) limit during publish.
-         The deeply nested static web assets from Identity UI packages create paths that exceed
-         the limit when combined with the long solution directory path. -->
-    <BaseIntermediateOutputPath>C:\bld\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-  </PropertyGroup>
-</Project>

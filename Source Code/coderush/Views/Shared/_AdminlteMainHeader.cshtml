@@ -1,0 +1,101 @@
+﻿@model coderush.Models.ApplicationUser
+@inject coderush.Data.ApplicationDbContext AppDbContext
+
+@{
+    UserProfile profile = Model == null
+        ? new UserProfile()
+        : AppDbContext.UserProfile.SingleOrDefault(x => x.ApplicationUserId == Model.Id)
+            ?? new UserProfile { ApplicationUserId = Model.Id, Email = Model.Email };
+    var profilePicture = string.IsNullOrWhiteSpace(profile.ProfilePicture)
+        ? UserProfile.DefaultProfilePicture
+        : profile.ProfilePicture;
+}
+
+<header class="main-header">
+    <!-- Logo -->
+    <a href="/" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>IT</b></span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>Inven</b>Tory</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        @if (Model != null)
+        {
+            <div class="notification-wrapper">
+                <a href="javascript:void(0);" id="notification-bell" class="notification-bell" title="Notifications">
+                    <i class="fa fa-bell"></i>
+                    <span class="notification-badge" id="notification-badge" style="display:none;">0</span>
+                </a>
+                <div id="notification-dropdown" class="notification-dropdown" style="display:none;">
+                    <div class="notification-header">
+                        <span class="notification-header-title">Notifications</span>
+                        <button id="notif-search-btn" class="notif-search-btn" title="Search notifications">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="notif-search-bar" class="notif-search-bar" style="display:none;">
+                        <input type="text" id="notif-search-input" class="notif-search-input" placeholder="Search notifications..." autocomplete="off" />
+                        <button id="notif-search-clear" class="notif-search-clear" title="Clear search">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="notification-list" class="notification-list"></div>
+                    <div id="notification-footer" class="notification-footer"></div>
+                </div>
+            </div>
+        }
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+
+                @if (Model != null)
+                {
+                    <li style="float:left;">
+                        <a href="#" style="color:#fff; cursor:default; pointer-events:none; font-family:'Pacifico',cursive; font-style:italic; font-size:15px; letter-spacing:0.5px; text-shadow:0 1px 3px rgba(0,0,0,0.3);">Hello, Welcome!</a>
+                    </li>
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="@profilePicture" class="user-image profilePicture" alt="User Image">
+                            <span class="hidden-xs" style="text-align:center; display:inline-block;">@profile.LastName</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="@profilePicture" class="img-circle profilePicture" alt="User Image">
+                                <p style="text-align:center;">
+                                    @profile.FirstName @profile.LastName
+                                </p>
+                            </li>
+
+                            <!-- Menu Footer-->
+
+                            <li class="user-footer">
+
+                                <div class="pull-left">
+                                    <a href="@Url.Action("UserProfile", "UserRole")" class="btn btn-default btn-flat">Profile</a>
+                                </div>
+                                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                                    <div class="pull-right">
+                                        <button type="submit" class="btn btn-default btn-flat">Sign out</button>
+                                    </div>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </li>
+
+                }
+
+
+
+
+            </ul>
+        </div>
+    </nav>
+</header>
