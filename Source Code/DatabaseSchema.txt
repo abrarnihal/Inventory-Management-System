@@ -1,0 +1,508 @@
+-- ============================================================================
+-- Inventory Management System - Complete Database Schema
+-- SQL Server (generated from Entity Framework Core migrations)
+-- ============================================================================
+-- Migrations applied (in order):
+--   1. 20260325031729_initialdb
+--   2. 20260326002948_profilepicture
+--   3. 20260329192122_AddChatLog
+--   4. 20260329195402_AddConversationTitle
+--   5. 20260329215851_AddConversationIsPinned
+--   6. 20260402130117_AzureSqlMigration
+-- ============================================================================
+
+-- ============================================================================
+-- ASP.NET Identity Tables
+-- ============================================================================
+
+CREATE TABLE [AspNetRoles] (
+    [Id]               NVARCHAR(450)  NOT NULL,
+    [ConcurrencyStamp] NVARCHAR(MAX)  NULL,
+    [Name]             NVARCHAR(256)  NULL,
+    [NormalizedName]   NVARCHAR(256)  NULL,
+    CONSTRAINT [PK_AspNetRoles] PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [AspNetUsers] (
+    [Id]                   NVARCHAR(450)      NOT NULL,
+    [AccessFailedCount]    INT                NOT NULL,
+    [ConcurrencyStamp]     NVARCHAR(MAX)      NULL,
+    [Email]                NVARCHAR(256)      NULL,
+    [EmailConfirmed]       BIT                NOT NULL,
+    [LockoutEnabled]       BIT                NOT NULL,
+    [LockoutEnd]           DATETIMEOFFSET     NULL,
+    [NormalizedEmail]      NVARCHAR(256)      NULL,
+    [NormalizedUserName]   NVARCHAR(256)      NULL,
+    [PasswordHash]         NVARCHAR(MAX)      NULL,
+    [PhoneNumber]          NVARCHAR(MAX)      NULL,
+    [PhoneNumberConfirmed] BIT                NOT NULL,
+    [SecurityStamp]        NVARCHAR(MAX)      NULL,
+    [TwoFactorEnabled]     BIT                NOT NULL,
+    [UserName]             NVARCHAR(256)      NULL,
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [AspNetRoleClaims] (
+    [Id]         INT            NOT NULL IDENTITY(1,1),
+    [ClaimType]  NVARCHAR(MAX)  NULL,
+    [ClaimValue] NVARCHAR(MAX)  NULL,
+    [RoleId]     NVARCHAR(450)  NOT NULL,
+    CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId])
+        REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+);
+
+CREATE TABLE [AspNetUserClaims] (
+    [Id]         INT            NOT NULL IDENTITY(1,1),
+    [ClaimType]  NVARCHAR(MAX)  NULL,
+    [ClaimValue] NVARCHAR(MAX)  NULL,
+    [UserId]     NVARCHAR(450)  NOT NULL,
+    CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY ([UserId])
+        REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+CREATE TABLE [AspNetUserLogins] (
+    [LoginProvider]       NVARCHAR(450)  NOT NULL,
+    [ProviderKey]         NVARCHAR(450)  NOT NULL,
+    [ProviderDisplayName] NVARCHAR(MAX)  NULL,
+    [UserId]              NVARCHAR(450)  NOT NULL,
+    CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
+    CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY ([UserId])
+        REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+CREATE TABLE [AspNetUserRoles] (
+    [UserId] NVARCHAR(450) NOT NULL,
+    [RoleId] NVARCHAR(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY ([UserId], [RoleId]),
+    CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY ([RoleId])
+        REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY ([UserId])
+        REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+CREATE TABLE [AspNetUserTokens] (
+    [UserId]        NVARCHAR(450)  NOT NULL,
+    [LoginProvider] NVARCHAR(450)  NOT NULL,
+    [Name]          NVARCHAR(450)  NOT NULL,
+    [Value]         NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name]),
+    CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY ([UserId])
+        REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- Business Domain Tables
+-- ============================================================================
+
+CREATE TABLE [Bill] (
+    [BillId]              INT                NOT NULL IDENTITY(1,1),
+    [BillDate]            DATETIMEOFFSET     NOT NULL,
+    [BillDueDate]         DATETIMEOFFSET     NOT NULL,
+    [BillName]            NVARCHAR(MAX)      NULL,
+    [BillTypeId]          INT                NOT NULL,
+    [Description]         NVARCHAR(MAX)      NULL,
+    [GoodsReceivedNoteId] INT                NOT NULL,
+    [VendorDONumber]      NVARCHAR(MAX)      NULL,
+    [VendorInvoiceNumber] NVARCHAR(MAX)      NULL,
+    CONSTRAINT [PK_Bill] PRIMARY KEY ([BillId])
+);
+
+CREATE TABLE [BillType] (
+    [BillTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [BillTypeName] NVARCHAR(MAX)  NOT NULL,
+    [Description]  NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_BillType] PRIMARY KEY ([BillTypeId])
+);
+
+CREATE TABLE [Branch] (
+    [BranchId]      INT            NOT NULL IDENTITY(1,1),
+    [Address]       NVARCHAR(MAX)  NULL,
+    [BranchName]    NVARCHAR(MAX)  NOT NULL,
+    [City]          NVARCHAR(MAX)  NULL,
+    [ContactPerson] NVARCHAR(MAX)  NULL,
+    [CurrencyId]    INT            NOT NULL,
+    [Description]   NVARCHAR(MAX)  NULL,
+    [Email]         NVARCHAR(MAX)  NULL,
+    [Phone]         NVARCHAR(MAX)  NULL,
+    [State]         NVARCHAR(MAX)  NULL,
+    [ZipCode]       NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_Branch] PRIMARY KEY ([BranchId])
+);
+
+CREATE TABLE [CashBank] (
+    [CashBankId]   INT            NOT NULL IDENTITY(1,1),
+    [CashBankName] NVARCHAR(MAX)  NULL,
+    [Description]  NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_CashBank] PRIMARY KEY ([CashBankId])
+);
+
+CREATE TABLE [Currency] (
+    [CurrencyId]   INT            NOT NULL IDENTITY(1,1),
+    [CurrencyCode] NVARCHAR(MAX)  NOT NULL,
+    [CurrencyName] NVARCHAR(MAX)  NOT NULL,
+    [Description]  NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_Currency] PRIMARY KEY ([CurrencyId])
+);
+
+CREATE TABLE [Customer] (
+    [CustomerId]     INT            NOT NULL IDENTITY(1,1),
+    [Address]        NVARCHAR(MAX)  NULL,
+    [City]           NVARCHAR(MAX)  NULL,
+    [ContactPerson]  NVARCHAR(MAX)  NULL,
+    [CustomerName]   NVARCHAR(MAX)  NOT NULL,
+    [CustomerTypeId] INT            NOT NULL,
+    [Email]          NVARCHAR(MAX)  NULL,
+    [Phone]          NVARCHAR(MAX)  NULL,
+    [State]          NVARCHAR(MAX)  NULL,
+    [ZipCode]        NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_Customer] PRIMARY KEY ([CustomerId])
+);
+
+CREATE TABLE [CustomerType] (
+    [CustomerTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [CustomerTypeName] NVARCHAR(MAX)  NOT NULL,
+    [Description]      NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_CustomerType] PRIMARY KEY ([CustomerTypeId])
+);
+
+CREATE TABLE [GoodsReceivedNote] (
+    [GoodsReceivedNoteId]   INT                NOT NULL IDENTITY(1,1),
+    [GRNDate]               DATETIMEOFFSET     NOT NULL,
+    [GoodsReceivedNoteName] NVARCHAR(MAX)      NULL,
+    [IsFullReceive]         BIT                NOT NULL,
+    [PurchaseOrderId]       INT                NOT NULL,
+    [VendorDONumber]        NVARCHAR(MAX)      NULL,
+    [VendorInvoiceNumber]   NVARCHAR(MAX)      NULL,
+    [WarehouseId]           INT                NOT NULL,
+    CONSTRAINT [PK_GoodsReceivedNote] PRIMARY KEY ([GoodsReceivedNoteId])
+);
+
+CREATE TABLE [Invoice] (
+    [InvoiceId]      INT                NOT NULL IDENTITY(1,1),
+    [Description]    NVARCHAR(MAX)      NULL,
+    [InvoiceDate]    DATETIMEOFFSET     NOT NULL,
+    [InvoiceDueDate] DATETIMEOFFSET     NOT NULL,
+    [InvoiceName]    NVARCHAR(MAX)      NULL,
+    [InvoiceTypeId]  INT                NOT NULL,
+    [ShipmentId]     INT                NOT NULL,
+    CONSTRAINT [PK_Invoice] PRIMARY KEY ([InvoiceId])
+);
+
+CREATE TABLE [InvoiceType] (
+    [InvoiceTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]     NVARCHAR(MAX)  NULL,
+    [InvoiceTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_InvoiceType] PRIMARY KEY ([InvoiceTypeId])
+);
+
+CREATE TABLE [NumberSequence] (
+    [NumberSequenceId]   INT            NOT NULL IDENTITY(1,1),
+    [LastNumber]         INT            NOT NULL,
+    [Module]             NVARCHAR(MAX)  NOT NULL,
+    [NumberSequenceName] NVARCHAR(MAX)  NOT NULL,
+    [Prefix]             NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_NumberSequence] PRIMARY KEY ([NumberSequenceId])
+);
+
+CREATE TABLE [PaymentReceive] (
+    [PaymentReceiveId]   INT                NOT NULL IDENTITY(1,1),
+    [InvoiceId]          INT                NOT NULL,
+    [IsFullPayment]      BIT                NOT NULL,
+    [PaymentAmount]      FLOAT              NOT NULL,
+    [PaymentDate]        DATETIMEOFFSET     NOT NULL,
+    [PaymentReceiveName] NVARCHAR(MAX)      NULL,
+    [PaymentTypeId]      INT                NOT NULL,
+    CONSTRAINT [PK_PaymentReceive] PRIMARY KEY ([PaymentReceiveId])
+);
+
+CREATE TABLE [PaymentType] (
+    [PaymentTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]     NVARCHAR(MAX)  NULL,
+    [PaymentTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_PaymentType] PRIMARY KEY ([PaymentTypeId])
+);
+
+CREATE TABLE [PaymentVoucher] (
+    [PaymentvoucherId]  INT                NOT NULL IDENTITY(1,1),
+    [BillId]            INT                NOT NULL,
+    [CashBankId]        INT                NOT NULL,
+    [IsFullPayment]     BIT                NOT NULL,
+    [PaymentAmount]     FLOAT              NOT NULL,
+    [PaymentDate]       DATETIMEOFFSET     NOT NULL,
+    [PaymentTypeId]     INT                NOT NULL,
+    [PaymentVoucherName] NVARCHAR(MAX)     NULL,
+    CONSTRAINT [PK_PaymentVoucher] PRIMARY KEY ([PaymentvoucherId])
+);
+
+CREATE TABLE [Product] (
+    [ProductId]          INT            NOT NULL IDENTITY(1,1),
+    [Barcode]            NVARCHAR(MAX)  NULL,
+    [BranchId]           INT            NOT NULL,
+    [CurrencyId]         INT            NOT NULL,
+    [DefaultBuyingPrice] FLOAT          NOT NULL,
+    [DefaultSellingPrice] FLOAT         NOT NULL,
+    [Description]        NVARCHAR(MAX)  NULL,
+    [ProductCode]        NVARCHAR(MAX)  NULL,
+    [ProductImageUrl]    NVARCHAR(MAX)  NULL,
+    [ProductName]        NVARCHAR(MAX)  NOT NULL,
+    [UnitOfMeasureId]    INT            NOT NULL,
+    CONSTRAINT [PK_Product] PRIMARY KEY ([ProductId])
+);
+
+CREATE TABLE [ProductType] (
+    [ProductTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]     NVARCHAR(MAX)  NULL,
+    [ProductTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_ProductType] PRIMARY KEY ([ProductTypeId])
+);
+
+CREATE TABLE [PurchaseOrder] (
+    [PurchaseOrderId]   INT                NOT NULL IDENTITY(1,1),
+    [Amount]            FLOAT              NOT NULL,
+    [BranchId]          INT                NOT NULL,
+    [CurrencyId]        INT                NOT NULL,
+    [DeliveryDate]      DATETIMEOFFSET     NOT NULL,
+    [Description]       NVARCHAR(MAX)      NULL,
+    [Discount]          FLOAT              NOT NULL,
+    [Freight]           FLOAT              NOT NULL,
+    [OrderDate]         DATETIMEOFFSET     NOT NULL,
+    [PurchaseOrderName] NVARCHAR(MAX)      NULL,
+    [PurchaseTypeId]    INT                NOT NULL,
+    [Remarks]           NVARCHAR(MAX)      NULL,
+    [SubTotal]          FLOAT              NOT NULL,
+    [Tax]               FLOAT              NOT NULL,
+    [Total]             FLOAT              NOT NULL,
+    [VendorId]          INT                NOT NULL,
+    CONSTRAINT [PK_PurchaseOrder] PRIMARY KEY ([PurchaseOrderId])
+);
+
+CREATE TABLE [PurchaseOrderLine] (
+    [PurchaseOrderLineId] INT            NOT NULL IDENTITY(1,1),
+    [Amount]              FLOAT          NOT NULL,
+    [Description]         NVARCHAR(MAX)  NULL,
+    [DiscountAmount]      FLOAT          NOT NULL,
+    [DiscountPercentage]  FLOAT          NOT NULL,
+    [Price]               FLOAT          NOT NULL,
+    [ProductId]           INT            NOT NULL,
+    [PurchaseOrderId]     INT            NOT NULL,
+    [Quantity]            FLOAT          NOT NULL,
+    [SubTotal]            FLOAT          NOT NULL,
+    [TaxAmount]           FLOAT          NOT NULL,
+    [TaxPercentage]       FLOAT          NOT NULL,
+    [Total]               FLOAT          NOT NULL,
+    CONSTRAINT [PK_PurchaseOrderLine] PRIMARY KEY ([PurchaseOrderLineId]),
+    CONSTRAINT [FK_PurchaseOrderLine_PurchaseOrder_PurchaseOrderId] FOREIGN KEY ([PurchaseOrderId])
+        REFERENCES [PurchaseOrder] ([PurchaseOrderId]) ON DELETE CASCADE
+);
+
+CREATE TABLE [PurchaseType] (
+    [PurchaseTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]      NVARCHAR(MAX)  NULL,
+    [PurchaseTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_PurchaseType] PRIMARY KEY ([PurchaseTypeId])
+);
+
+CREATE TABLE [SalesOrder] (
+    [SalesOrderId]    INT                NOT NULL IDENTITY(1,1),
+    [Amount]          FLOAT              NOT NULL,
+    [BranchId]        INT                NOT NULL,
+    [CurrencyId]      INT                NOT NULL,
+    [CustomerId]      INT                NOT NULL,
+    [CustomerRefNumber] NVARCHAR(MAX)    NULL,
+    [DeliveryDate]    DATETIMEOFFSET     NOT NULL,
+    [Discount]        FLOAT              NOT NULL,
+    [Freight]         FLOAT              NOT NULL,
+    [OrderDate]       DATETIMEOFFSET     NOT NULL,
+    [Remarks]         NVARCHAR(MAX)      NULL,
+    [SalesOrderName]  NVARCHAR(MAX)      NULL,
+    [SalesTypeId]     INT                NOT NULL,
+    [SubTotal]        FLOAT              NOT NULL,
+    [Tax]             FLOAT              NOT NULL,
+    [Total]           FLOAT              NOT NULL,
+    CONSTRAINT [PK_SalesOrder] PRIMARY KEY ([SalesOrderId])
+);
+
+CREATE TABLE [SalesOrderLine] (
+    [SalesOrderLineId]  INT            NOT NULL IDENTITY(1,1),
+    [Amount]            FLOAT          NOT NULL,
+    [Description]       NVARCHAR(MAX)  NULL,
+    [DiscountAmount]    FLOAT          NOT NULL,
+    [DiscountPercentage] FLOAT         NOT NULL,
+    [Price]             FLOAT          NOT NULL,
+    [ProductId]         INT            NOT NULL,
+    [Quantity]          FLOAT          NOT NULL,
+    [SalesOrderId]      INT            NOT NULL,
+    [SubTotal]          FLOAT          NOT NULL,
+    [TaxAmount]         FLOAT          NOT NULL,
+    [TaxPercentage]     FLOAT          NOT NULL,
+    [Total]             FLOAT          NOT NULL,
+    CONSTRAINT [PK_SalesOrderLine] PRIMARY KEY ([SalesOrderLineId]),
+    CONSTRAINT [FK_SalesOrderLine_SalesOrder_SalesOrderId] FOREIGN KEY ([SalesOrderId])
+        REFERENCES [SalesOrder] ([SalesOrderId]) ON DELETE CASCADE
+);
+
+CREATE TABLE [SalesType] (
+    [SalesTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]   NVARCHAR(MAX)  NULL,
+    [SalesTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_SalesType] PRIMARY KEY ([SalesTypeId])
+);
+
+CREATE TABLE [Shipment] (
+    [ShipmentId]     INT                NOT NULL IDENTITY(1,1),
+    [IsFullShipment] BIT                NOT NULL,
+    [SalesOrderId]   INT                NOT NULL,
+    [ShipmentDate]   DATETIMEOFFSET     NOT NULL,
+    [ShipmentName]   NVARCHAR(MAX)      NULL,
+    [ShipmentTypeId] INT                NOT NULL,
+    [WarehouseId]    INT                NOT NULL,
+    CONSTRAINT [PK_Shipment] PRIMARY KEY ([ShipmentId])
+);
+
+CREATE TABLE [ShipmentType] (
+    [ShipmentTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]      NVARCHAR(MAX)  NULL,
+    [ShipmentTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_ShipmentType] PRIMARY KEY ([ShipmentTypeId])
+);
+
+CREATE TABLE [UnitOfMeasure] (
+    [UnitOfMeasureId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]       NVARCHAR(MAX)  NULL,
+    [UnitOfMeasureName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_UnitOfMeasure] PRIMARY KEY ([UnitOfMeasureId])
+);
+
+CREATE TABLE [UserProfile] (
+    [UserProfileId]     INT            NOT NULL IDENTITY(1,1),
+    [ApplicationUserId] NVARCHAR(MAX)  NULL,
+    [ConfirmPassword]   NVARCHAR(MAX)  NULL,
+    [Email]             NVARCHAR(MAX)  NULL,
+    [FirstName]         NVARCHAR(MAX)  NULL,
+    [LastName]          NVARCHAR(MAX)  NULL,
+    [OldPassword]       NVARCHAR(MAX)  NULL,
+    [Password]          NVARCHAR(MAX)  NULL,
+    [ProfilePicture]    NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_UserProfile] PRIMARY KEY ([UserProfileId])
+);
+
+CREATE TABLE [Vendor] (
+    [VendorId]      INT            NOT NULL IDENTITY(1,1),
+    [Address]       NVARCHAR(MAX)  NULL,
+    [City]          NVARCHAR(MAX)  NULL,
+    [ContactPerson] NVARCHAR(MAX)  NULL,
+    [Email]         NVARCHAR(MAX)  NULL,
+    [Phone]         NVARCHAR(MAX)  NULL,
+    [State]         NVARCHAR(MAX)  NULL,
+    [VendorName]    NVARCHAR(MAX)  NOT NULL,
+    [VendorTypeId]  INT            NOT NULL,
+    [ZipCode]       NVARCHAR(MAX)  NULL,
+    CONSTRAINT [PK_Vendor] PRIMARY KEY ([VendorId])
+);
+
+CREATE TABLE [VendorType] (
+    [VendorTypeId]   INT            NOT NULL IDENTITY(1,1),
+    [Description]    NVARCHAR(MAX)  NULL,
+    [VendorTypeName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_VendorType] PRIMARY KEY ([VendorTypeId])
+);
+
+CREATE TABLE [Warehouse] (
+    [WarehouseId]   INT            NOT NULL IDENTITY(1,1),
+    [BranchId]      INT            NOT NULL,
+    [Description]   NVARCHAR(MAX)  NULL,
+    [WarehouseName] NVARCHAR(MAX)  NOT NULL,
+    CONSTRAINT [PK_Warehouse] PRIMARY KEY ([WarehouseId])
+);
+
+-- ============================================================================
+-- Chat Tables
+-- ============================================================================
+
+CREATE TABLE [ChatConversation] (
+    [ChatConversationId] INT            NOT NULL IDENTITY(1,1),
+    [ApplicationUserId]  NVARCHAR(450)  NOT NULL,
+    [CreatedAt]          DATETIME2      NOT NULL,
+    [Title]              NVARCHAR(MAX)  NULL,
+    [IsPinned]           BIT            NOT NULL DEFAULT 0,
+    CONSTRAINT [PK_ChatConversation] PRIMARY KEY ([ChatConversationId]),
+    CONSTRAINT [FK_ChatConversation_AspNetUsers_ApplicationUserId] FOREIGN KEY ([ApplicationUserId])
+        REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);
+
+CREATE TABLE [ChatMessage] (
+    [ChatMessageId]      INT            NOT NULL IDENTITY(1,1),
+    [ChatConversationId] INT            NOT NULL,
+    [Role]               NVARCHAR(MAX)  NOT NULL,
+    [Content]            NVARCHAR(MAX)  NOT NULL,
+    [FileNames]          NVARCHAR(MAX)  NULL,
+    [SentAt]             DATETIME2      NOT NULL,
+    CONSTRAINT [PK_ChatMessage] PRIMARY KEY ([ChatMessageId]),
+    CONSTRAINT [FK_ChatMessage_ChatConversation_ChatConversationId] FOREIGN KEY ([ChatConversationId])
+        REFERENCES [ChatConversation] ([ChatConversationId]) ON DELETE CASCADE
+);
+
+-- ============================================================================
+-- Notification Tables 
+-- ============================================================================
+
+CREATE TABLE [Notification] (
+    [NotificationId]    INT                NOT NULL IDENTITY(1,1),
+    [Message]           NVARCHAR(MAX)      NOT NULL,
+    [CreatedDateTime]   DATETIMEOFFSET     NOT NULL,
+    [TargetUserId]      NVARCHAR(MAX)      NULL,
+    [TargetRole]        NVARCHAR(MAX)      NULL,
+    [EntityName]        NVARCHAR(MAX)      NULL,
+    [EntityAction]      NVARCHAR(MAX)      NULL,
+    CONSTRAINT [PK_Notification] PRIMARY KEY ([NotificationId])
+);
+
+CREATE TABLE [NotificationReadStatus] (
+    [NotificationReadStatusId] INT            NOT NULL IDENTITY(1,1),
+    [NotificationId]           INT            NOT NULL,
+    [UserId]                   NVARCHAR(MAX)  NOT NULL,
+    [IsRead]                   BIT            NOT NULL,
+    [IsDeleted]                BIT            NOT NULL,
+    CONSTRAINT [PK_NotificationReadStatus] PRIMARY KEY ([NotificationReadStatusId])
+);
+
+-- ============================================================================
+-- Indexes
+-- ============================================================================
+
+CREATE INDEX [IX_AspNetRoleClaims_RoleId]
+    ON [AspNetRoleClaims] ([RoleId]);
+
+CREATE UNIQUE INDEX [RoleNameIndex]
+    ON [AspNetRoles] ([NormalizedName])
+    WHERE [NormalizedName] IS NOT NULL;
+
+CREATE INDEX [IX_AspNetUserClaims_UserId]
+    ON [AspNetUserClaims] ([UserId]);
+
+CREATE INDEX [IX_AspNetUserLogins_UserId]
+    ON [AspNetUserLogins] ([UserId]);
+
+CREATE INDEX [IX_AspNetUserRoles_RoleId]
+    ON [AspNetUserRoles] ([RoleId]);
+
+CREATE INDEX [EmailIndex]
+    ON [AspNetUsers] ([NormalizedEmail]);
+
+CREATE UNIQUE INDEX [UserNameIndex]
+    ON [AspNetUsers] ([NormalizedUserName])
+    WHERE [NormalizedUserName] IS NOT NULL;
+
+CREATE INDEX [IX_PurchaseOrderLine_PurchaseOrderId]
+    ON [PurchaseOrderLine] ([PurchaseOrderId]);
+
+CREATE INDEX [IX_SalesOrderLine_SalesOrderId]
+    ON [SalesOrderLine] ([SalesOrderId]);
+
+CREATE INDEX [IX_ChatConversation_ApplicationUserId]
+    ON [ChatConversation] ([ApplicationUserId]);
+
+CREATE INDEX [IX_ChatMessage_ChatConversationId]
+    ON [ChatMessage] ([ChatConversationId]);
