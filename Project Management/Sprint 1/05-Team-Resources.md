@@ -10,7 +10,7 @@
 | Backend Developer # 2 | 1 | Repository setup, build configuration, database provisioning |
 | Tester | 1 | Test strategy definition, test project scaffolding |
 
-**Total team size:** 6 members
+**Total team size:** 5 members
 
 ---
 
