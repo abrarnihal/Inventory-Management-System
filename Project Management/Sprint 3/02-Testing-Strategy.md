@@ -138,7 +138,6 @@ Browser-based Selenium tests that validate complete user journeys.
 - `E2ETestBase` / `SeleniumTestBase` – Base classes managing browser lifecycle.
 - `TestWebServer` – Launches the application for E2E testing.
 - `LoginPage` – Page object for authentication flows.
-- `SyncfusionGridPage` – Page object for interacting with Syncfusion grids.
 
 ---
 

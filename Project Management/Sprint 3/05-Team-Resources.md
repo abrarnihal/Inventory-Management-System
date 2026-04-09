@@ -2,7 +2,7 @@
 
 ## Team Composition
 
-| Primary Role(S) | Count | Sprint 3 Focus |
+| Primary/Technical Role(S) | Count | Sprint 3 Focus |
 |---|---|---|
 | Team Leader | 1 | Final sprint coordination, release planning, documentation |
 | Tester | 1 | Test strategy execution, E2E test design, defect triage, Unit tests, integration tests, automated UI tests |

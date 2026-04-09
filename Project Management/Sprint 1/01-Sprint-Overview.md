@@ -38,5 +38,5 @@
 - **Framework:** ASP.NET Core on .NET 10 with the `Microsoft.NET.Sdk.Web` SDK.
 - **ORM:** Entity Framework Core 10 with SQL Server provider.
 - **Authentication:** ASP.NET Core Identity with configurable password and lockout policies read from `appsettings.json`.
-- **API Serialization:** Newtonsoft.Json via `Microsoft.AspNetCore.Mvc.NewtonsoftJson` for Syncfusion compatibility.
+- **API Serialization:** Newtonsoft.Json via `Microsoft.AspNetCore.Mvc.NewtonsoftJson` for data-grid implementation compatibility.
 - **Email:** SendGrid SDK integrated through `IEmailSender` abstraction.

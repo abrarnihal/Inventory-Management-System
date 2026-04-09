@@ -2,7 +2,7 @@
 
 ## Team Composition
 
-| Primary Role(s) | Count | Sprint 2 Focus |
+| Primary/Technical Role(s) | Count | Sprint 2 Focus |
 |---|---|---|
 | Team Leader | 1 | Sprint planning, UI review sessions, stakeholder demos |
 | Frontend Lead + Developer | 1 | View architecture, Syncfusion integration, layout design, Razor views, CSS styling |
