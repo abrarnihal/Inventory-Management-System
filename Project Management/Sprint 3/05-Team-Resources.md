@@ -4,13 +4,12 @@
 
 | Role | Count | Sprint 3 Focus |
 |---|---|---|
-| Project Manager | 1 | Final sprint coordination, release planning, documentation |
-| QA Lead | 1 | Test strategy execution, E2E test design, defect triage |
-| QA Engineers | 2 | Unit tests, integration tests, automated UI tests |
-| Full-Stack Developer | 1 | AI ChatBot feature, notification system, CAPTCHA |
-| DevOps / Infrastructure | 1 | Azure deployment, CI/CD pipeline, health checks |
+| Team Leader | 1 | Final sprint coordination, release planning, documentation |
+| Tester | 1 | Test strategy execution, E2E test design, defect triage, Unit tests, integration tests, automated UI tests |
+| Developer # 1 | 2 | AI ChatBot feature, notification system, CAPTCHA |
+| Developer # 2 | 1 | Azure deployment, CI/CD pipeline, health checks |
 
-**Total team size:** 6 members
+**Total team size:** 5 members
 
 ---
 
@@ -68,5 +67,5 @@
 |---|---|---|---|---|
 | Stories Completed | 18 | 24 | 20 | **62** |
 | Story Points | 42 | 56 | 48 | **146** |
-| Team Members | 6 | 6 | 6 | **6** |
-| Sprint Duration | 2 weeks | 2 weeks | 2 weeks | **6 weeks** |
+| Team Members | 5 | 5 | 5 | **5** |
+| Sprint Duration | 15 days | 10 days | 16 days | **6 weeks** |
