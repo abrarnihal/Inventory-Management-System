@@ -9,7 +9,7 @@ Project - Asp.Net Core implementation of inventory (order) management system. wa
 - Team Secretary     --> Samikshya Pun                --> @ZSammyy
 - Developer # 1      --> Farzan Ahmed Hossain         --> @FarzanAhmedHossain
 - Developer # 2      --> Harunur Rashid Emon          --> @Harunemon41
-- Tester             --> Rimel Pinak                  --> @pinakpaul232
+- Tester             --> Rimel Paul Pinak             --> @pinakpaul232
 
 # Program Features
 
