@@ -4,11 +4,11 @@
 
 | Role | Count | Sprint 1 Focus |
 |---|---|---|
-| Project Manager | 1 | Sprint planning, backlog grooming, stakeholder communication |
-| Solution Architect | 1 | Technology stack selection, solution structure, coding standards |
-| Backend Developers | 2 | Domain models, services, API controllers, EF Core migrations |
-| DevOps / Infrastructure | 1 | Repository setup, build configuration, database provisioning |
-| QA Lead | 1 | Test strategy definition, test project scaffolding |
+| Team Lead | 1 | Sprint planning, backlog grooming, stakeholder communication |
+| Group Secretary | 1 | Technology stack selection, solution structure, coding standards |
+| Backend Developer # 1 | 1 | Domain models, services, API controllers, EF Core migrations |
+| Backend Developer # 2 | 1 | Repository setup, build configuration, database provisioning |
+| Tester | 1 | Test strategy definition, test project scaffolding |
 
 **Total team size:** 6 members
 
