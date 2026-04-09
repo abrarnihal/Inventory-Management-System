@@ -2,11 +2,11 @@
 
 ## Team Composition
 
-| Role | Count | Sprint 3 Focus |
+| Primary Role(S) | Count | Sprint 3 Focus |
 |---|---|---|
 | Team Leader | 1 | Final sprint coordination, release planning, documentation |
 | Tester | 1 | Test strategy execution, E2E test design, defect triage, Unit tests, integration tests, automated UI tests |
-| Developer # 1 | 2 | AI ChatBot feature, notification system, CAPTCHA |
+| Developer # 1 | 1 | AI ChatBot feature, notification system, CAPTCHA |
 | Developer # 2 | 1 | Azure deployment, CI/CD pipeline, health checks |
 
 **Total team size:** 5 members
