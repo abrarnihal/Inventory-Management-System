@@ -2,13 +2,13 @@
 
 ## Project Summary
 
-The **Inventory Management System** (codenamed *coderush*) is a full-stack web application built on **ASP.NET Core (.NET 10)** with Razor views, Entity Framework Core, and SQL Server. It was delivered by a **6-person team** over **3 sprints (6 weeks)**, completing **62 user stories** totalling **146 story points**.
+The **Inventory Management System** (codenamed *coderush*) is a full-stack web application built on **ASP.NET Core (.NET 10)** with Razor views, Entity Framework Core, and SQL Server. It was delivered by a **5-person team** over **3 sprints (6 weeks)**, completing **62 user stories** totalling **146 story points**.
 
 ---
 
 ## Sprint 1 – Project Structure & Functional Backend
 
-**Duration:** 2 weeks | **Stories:** 18 | **Points:** 42
+**Duration:** 15 days | **Stories:** 18 | **Points:** 42
 
 ### What Was Done
 
@@ -23,19 +23,19 @@ The **Inventory Management System** (codenamed *coderush*) is a full-stack web a
 
 - **Agile/Scrum** ceremonies: daily standups, sprint planning, review, and retrospective.
 - Git feature-branch workflow with mandatory pull-request reviews.
-- Team: 1 Project Manager, 1 Solution Architect, 2 Backend Developers, 1 DevOps Engineer, 1 QA Lead.
+- Team: 1 Team Leader, 1 Tester, 2 Developers, 1 Team Secretary.
 
 ---
 
 ## Sprint 2 – Frontend Development & Backend Adjustments
 
-**Duration:** 2 weeks | **Stories:** 24 | **Points:** 56
+**Duration:** 10 days | **Stories:** 24 | **Points:** 56
 
 ### What Was Done
 
 - Implemented **35+ Razor views** organised by feature: Dashboard, Products, Customers, Vendors, Purchase Orders (with Detail), Sales Orders (with Detail), Invoices, Bills, Payments, Shipments, GRN, Warehouses, Branches, and all reference-data types.
 - Created corresponding **MVC page controllers** for every view (e.g., `DashboardController`, `ProductController`, `SalesOrderController`).
-- Integrated **Syncfusion data grids** for inline CRUD editing, sorting, filtering, and paging across all list views.
+- Integrated **data grids** for inline CRUD editing, sorting, filtering, and paging across all list views.
 - Built the **shared layout** with a responsive sidebar navigation (`MainMenu`), top bar with notification badge, and Bootstrap-based styling.
 - Delivered full **account management** pages: Login, Register, 2FA, Lockout, Forgot Password, and profile management (Change Password, Enable Authenticator, External Logins).
 - Added **profile picture upload** support with a new migration (`20260326002948_profilepicture`) and `UploadProfilePictureController`.
@@ -47,13 +47,13 @@ The **Inventory Management System** (codenamed *coderush*) is a full-stack web a
 - Mid-sprint UI review with stakeholders; wireframes for Dashboard and Order Detail pages.
 - Cross-functional pairing between frontend and backend developers for API integration.
 - Browser testing across Chrome, Edge, and Firefox.
-- Team: 1 Project Manager, 1 Frontend Lead, 2 Frontend Developers, 1 Backend Developer, 1 DevOps Engineer.
+- Team: 1 Team Leader, 1 Tester, 2 Developers, 1 Team Secretary.
 
 ---
 
 ## Sprint 3 – Testing, Additional Features & Deployment Readiness
 
-**Duration:** 2 weeks | **Stories:** 20 | **Points:** 48
+**Duration:** 16 days | **Stories:** 20 | **Points:** 48
 
 ### What Was Done
 
@@ -84,7 +84,7 @@ The **Inventory Management System** (codenamed *coderush*) is a full-stack web a
 - Test-driven development (TDD) for the ChatBot feature.
 - Bug triage meetings 3× per week; quality gates enforced (zero critical defects, full build pass).
 - CI pipeline running all four test projects on every pull request.
-- Team: 1 Project Manager, 1 QA Lead, 2 QA Engineers, 1 Full-Stack Developer, 1 DevOps Engineer.
+- Team: 1 Team Leader, 1 Tester, 2 Developers, 1 Team Secretary.
 
 ---
 
@@ -92,8 +92,8 @@ The **Inventory Management System** (codenamed *coderush*) is a full-stack web a
 
 | Metric | Sprint 1 | Sprint 2 | Sprint 3 | **Total** |
 |---|---|---|---|---|
-| Duration | 2 weeks | 2 weeks | 2 weeks | **6 weeks** |
+| Duration | 15 days | 10 days | 16 days | **6 weeks** |
 | Stories | 18 | 24 | 20 | **62** |
 | Story Points | 42 | 56 | 48 | **146** |
-| Team Size | 6 | 6 | 6 | **6** |
+| Team Size | 5 | 5 | 5 | **5** |
 | Focus | Backend & Architecture | Frontend & UI | Testing & Features | — |
