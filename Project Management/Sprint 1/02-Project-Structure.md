@@ -46,4 +46,3 @@ Inventory-Management-System/
 | Email | SendGrid | 9.29.3 |
 | Spreadsheets | ClosedXML / DocumentFormat.OpenXml | 0.105.0 / 3.5.1 |
 | Cloud Identity | Azure.Identity | 1.20.0 |
-| TypeScript | Microsoft.TypeScript.MSBuild | 6.0.3 |

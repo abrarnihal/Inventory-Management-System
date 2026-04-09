@@ -108,5 +108,4 @@ Each business view is served by a corresponding MVC controller:
 | **Data Grids** | Inline CRUD editing, sorting, filtering, and paging for all list views |
 | **CrudViewModel** | Standardized data binding model for grid operations |
 | **Bootstrap** | Responsive layout and styling |
-| **TypeScript** | Client-side interactivity (compiled via `Microsoft.TypeScript.MSBuild`) |
 | **wwwroot/** | Static assets – stylesheets, scripts, images |

@@ -3,7 +3,7 @@
 ## Design Principles
 
 1. **Consistency** – Every list view follows the same grid-based layout with inline editing, ensuring users learn one interaction pattern.
-2. **Efficiency** – Syncfusion grids provide in-place CRUD without requiring separate create/edit pages for reference data.
+2. **Efficiency** – grids provide in-place CRUD without requiring separate create/edit pages for reference data.
 3. **Progressive disclosure** – Master-detail views (Purchase Order → Detail, Sales Order → Detail) let users drill down into line items.
 4. **Responsive** – Bootstrap grid system ensures the application works across desktop and tablet screen sizes.
 
@@ -14,24 +14,24 @@
 ### Shared Layout Structure
 
 ```
-┌──────────────────────────────────────────────────┐
-│  Top Navigation Bar (User menu, Notifications)   │
-├────────────┬─────────────────────────────────────┤
-│            │                                     │
-│  Sidebar   │        Main Content Area            │
-│  Navigation│                                     │
-│  (MainMenu)│   ┌─────────────────────────────┐   │
-│            │   │  Syncfusion Grid / Form      │   │
-│  • Dashboard   │  or Dashboard Widgets        │   │
-│  • Products│   │                               │   │
-│  • Customers   └─────────────────────────────┘   │
-│  • Vendors │                                     │
-│  • Purchase│                                     │
-│  • Sales   │                                     │
-│  • Finance │                                     │
-│  • Settings│                                     │
-│            │                                     │
-└────────────┴─────────────────────────────────────┘
+┌───────────────────────────────────────────────────┐
+│  Top Navigation Bar (User menu, Notifications)    │
+├─────────────┬─────────────────────────────────────┤
+│             │                                     │
+│  Sidebar    │        Main Content Area            │
+│  Navigation │                                     │
+│  (MainMenu) │   ┌─────────────────────────────┐   │
+│             │   │  Grid / Form                │   │
+│  • Dashboard│   │  or Dashboard Widgets       │   │
+│  • Products │   │                             │   │
+│  • Customers│   └─────────────────────────────┘   │
+│  • Vendors  │                                     │
+│  • Purchase │                                     │
+│  • Sales    │                                     │
+│  • Finance  │                                     │
+│  • Settings │                                     │
+│             │                                     │
+└─────────────┴─────────────────────────────────────┘
 ```
 
 ### Dashboard

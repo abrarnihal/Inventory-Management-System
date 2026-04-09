@@ -5,7 +5,7 @@
 | Primary Role(s) | Count | Sprint 2 Focus |
 |---|---|---|
 | Team Leader | 1 | Sprint planning, UI review sessions, stakeholder demos |
-| Frontend Lead + Developer | 1 | View architecture, Syncfusion integration, layout design, Razor views, TypeScript interactions, CSS styling |
+| Frontend Lead + Developer | 1 | View architecture, Syncfusion integration, layout design, Razor views, CSS styling |
 | Backend Developer | 1 | API adjustments, new migration, notification filter, Build pipeline updates, static asset optimization |
 
 **Total team size:** 5 members
@@ -24,7 +24,7 @@
 ### Design Process
 
 - **Wireframes** created for key pages (Dashboard, Order Detail) before implementation.
-- **Component library audit** – Syncfusion components were evaluated and selected for grid, form, and chart widgets.
+- **Component library audit** – components were evaluated and selected for grid, form, and chart widgets.
 - **Iterative feedback** – Frontend developers paired with the backend developer to resolve API shape mismatches in real time.
 
 ### Development Practices

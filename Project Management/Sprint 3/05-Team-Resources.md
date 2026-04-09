@@ -24,7 +24,7 @@
 
 ### Testing Process
 
-1. **Test plan creation** – QA Lead defined test cases for each module based on Sprint 1 & 2 requirements.
+1. **Test plan creation** – Tester defined test cases for each module based on Sprint 1 & 2 requirements.
 2. **Unit test development** – All controllers, services, and utilities tested in isolation using mocked dependencies.
 3. **Integration test development** – API endpoints tested through the full HTTP pipeline with `WebApplicationFactory`.
 4. **E2E test development** – Critical business workflows tested via Selenium browser automation.

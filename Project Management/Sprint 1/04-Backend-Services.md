@@ -33,7 +33,7 @@ A comprehensive set of RESTful API controllers was built under `Controllers/Api/
 
 - Constructor injection of `ApplicationDbContext`
 - Standard CRUD endpoints (`Get`, `GetById`, `Insert`, `Update`, `Delete`)
-- Syncfusion `CrudViewModel` support for grid data binding
+- `CrudViewModel` support for grid data binding
 
 ### API Controllers Implemented
 

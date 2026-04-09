@@ -37,7 +37,7 @@ While the core backend was completed in Sprint 1, several adjustments were requi
 
 ## API Refinements
 
-- Several API controllers received minor updates to their response shapes to match the Syncfusion grid's expected `CrudViewModel` format.
+- Several API controllers received minor updates to their response shapes to match the grid's expected `CrudViewModel` format.
 - Pagination and filtering parameters were standardized across all list endpoints.
 
 ---

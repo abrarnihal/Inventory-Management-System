@@ -12,7 +12,7 @@
 1. Implement Razor views for every business module (master data, transactions, financials).
 2. Build the Dashboard view with summary analytics.
 3. Create MVC page controllers to serve each view.
-4. Integrate Syncfusion data grids for inline CRUD operations.
+4. Integrate data grids for inline CRUD operations.
 5. Implement the shared layout, navigation sidebar, and responsive design.
 6. Add account management pages (login, register, 2FA, password management).
 7. Refine backend APIs where frontend needs required changes.
