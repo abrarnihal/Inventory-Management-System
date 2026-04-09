@@ -14,7 +14,7 @@ The **Inventory Management System** (codenamed *coderush*) is a full-stack web a
 
 - Established the solution structure: one main web project (`coderush`) plus four test projects (Unit, Integration, E2E, Automated).
 - Designed and implemented **25+ domain models** spanning master data (Product, Customer, Vendor, Warehouse, Branch, Currency), transactions (PurchaseOrder, SalesOrder, GoodsReceivedNote, Shipment), and financials (Invoice, Bill, PaymentReceive, PaymentVoucher).
-- Built **30+ RESTful API controllers** under `Controllers/Api/` with full CRUD support and Syncfusion `CrudViewModel` binding.
+- Built **30+ RESTful API controllers** under `Controllers/Api/` with full CRUD support and `CrudViewModel` binding.
 - Created the **service layer** with interfaces and implementations for number sequencing (`INumberSequence`), role management (`IRoles`), email dispatch (`IEmailSender` via SendGrid), and database initialization (`IFunctional`).
 - Configured **ASP.NET Core Identity** with customisable password, lockout, and sign-in policies bound from `appsettings.json`.
 - Generated the initial database migration (`20260325031729_initialdb`) and seed logic in `DbInitializer`.
