@@ -2,6 +2,8 @@
 Name : InvenTory;
 Project - Asp.Net Core implementation of inventory (order) management system. warehouse, product, vendor, customer, purchase order, sales order, shipment, goods received and more.
 
+# What is an Inventory Management System?
+An Inventory Management System is a software application that helps businesses track and manage their inventory levels, orders, sales, and deliveries. It provides tools for monitoring stock levels, managing suppliers and customers, processing orders, and generating reports. The system can help businesses optimize their inventory management processes, reduce costs, and improve customer satisfaction by ensuring that products are available when needed.
 
 # Done by - Sharp # Coders
 
