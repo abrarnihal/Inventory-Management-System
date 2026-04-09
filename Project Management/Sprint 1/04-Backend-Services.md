@@ -93,4 +93,4 @@ A comprehensive set of RESTful API controllers was built under `Controllers/Api/
 |---|---|---|
 | Backend Lead | 1 | Architecture decisions, DbContext design, service interfaces |
 | Backend Developers | 2 | API controllers, model implementation, migrations |
-| DevOps Engineer | 1 | Project scaffolding, CI pipeline setup, SQL Server provisioning |
+| Team Lead | 1 | Project scaffolding, CI pipeline setup, SQL Server provisioning |
