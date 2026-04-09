@@ -45,21 +45,26 @@
 <script type="text/javascript">
     $(function () {
 
+        var dataManager = ej.DataManager({
+            url: "/api/Vendor",
+            adaptor: new ej.WebApiAdaptor(),
+            offline: true
+        });
+
         var dataManagerVendorType = ej.DataManager({
             url: "/api/VendorType",
             adaptor: new ej.WebApiAdaptor()
         });
 
-        var dataManager = ej.DataManager({
-            url: "/api/Vendor",
-            insertUrl: "/api/Vendor/Insert",
-            updateUrl: "/api/Vendor/Update",
-            removeUrl: "/api/Vendor/Remove",
-            adaptor: new ej.WebApiAdaptor()
-        });
-
+        dataManager.ready.done(function (e) { 
             $("#Grid").ejGrid({
-                dataSource: dataManager,
+                dataSource: ej.DataManager({
+                    json: e.result,
+                    adaptor: new ej.remoteSaveAdaptor(),
+                    insertUrl: "/api/Vendor/Insert",
+                    updateUrl: "/api/Vendor/Update",
+                    removeUrl: "/api/Vendor/Remove",
+                }),
                 toolbarSettings: {
                     showToolbar: true,
                     toolbarItems: ["add", "edit", "delete", "update", "cancel", "search", "printGrid"]
@@ -85,7 +90,7 @@
                 pageSettings: { pageSize: 10, printMode: ej.Grid.PrintMode.CurrentPage },
                 columns: [
                     { field: "VendorId", headerText: 'Vendor Id', isPrimaryKey: true, isIdentity: true, visible: false },
-                    { field: "VendorName", headerText: 'Vendor Name' },
+                    { field: "VendorName", headerText: 'Vendor Name', validationRules: { required: true } },
                     { field: "VendorTypeId", headerText: 'Vendor Type', foreignKeyField: "VendorTypeId", foreignKeyValue: "VendorTypeName", dataSource: dataManagerVendorType },
                     { field: "Address", headerText: 'Address', },
                     { field: "City", headerText: 'City', },
@@ -97,8 +102,9 @@
                 ],
                 actionComplete: "complete",
             });
+        });
 
-        
+
     });
 
     function complete(args) {
