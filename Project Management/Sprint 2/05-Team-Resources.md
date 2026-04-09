@@ -2,15 +2,13 @@
 
 ## Team Composition
 
-| Role | Count | Sprint 2 Focus |
+| Primary Role(s) | Count | Sprint 2 Focus |
 |---|---|---|
-| Project Manager | 1 | Sprint planning, UI review sessions, stakeholder demos |
-| Frontend Lead | 1 | View architecture, Syncfusion integration, layout design |
-| Frontend Developers | 2 | Razor views, TypeScript interactions, CSS styling |
-| Backend Developer | 1 | API adjustments, new migration, notification filter |
-| DevOps / Infrastructure | 1 | Build pipeline updates, static asset optimization |
+| Team Leader | 1 | Sprint planning, UI review sessions, stakeholder demos |
+| Frontend Lead + Developer | 1 | View architecture, Syncfusion integration, layout design, Razor views, TypeScript interactions, CSS styling |
+| Backend Developer | 1 | API adjustments, new migration, notification filter, Build pipeline updates, static asset optimization |
 
-**Total team size:** 6 members
+**Total team size:** 5 members
 
 ---
 
